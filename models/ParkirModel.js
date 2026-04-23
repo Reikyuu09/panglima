@@ -1,7 +1,7 @@
 const db = require('../config/database');
 
 const ParkirModel = {
-  // Buat record parkir baru (Check-In)
+  // Create new parkir record (Check-In)
   create: async (data) => {
     try {
       const { id_kendaraan, id_tarif, waktu_masuk } = data;
@@ -11,11 +11,11 @@ const ParkirModel = {
       );
       return result.insertId;
     } catch (error) {
-      throw error;
+      throw new Error(`Error creating parkir record: ${error.message}`);
     }
   },
 
-  // Cek apakah kendaraan sedang parkir aktif
+  // Find active parkir by plat nomor
   findByPlatNomorAktif: async (plat_nomor) => {
     try {
       const [rows] = await db.query(`
@@ -24,14 +24,17 @@ const ParkirModel = {
         JOIN tablekendaraan k ON p.id_kendaraan = k.Id_kendaraan
         JOIN tabletarif t ON p.id_tarif = t.id_tarif
         WHERE k.plat_nomor = ? AND p.status = 'parkir'
-      `, [plat_nomor]);
-      return rows[0];
+        ORDER BY p.waktu_masuk DESC
+        LIMIT 1
+      `, [plat_nomor.toUpperCase()]);
+      
+      return rows[0] || null;
     } catch (error) {
-      throw error;
+      throw new Error(`Error finding active parkir: ${error.message}`);
     }
   },
 
-  // Ambil semua data parkir dengan join
+  // Get all parkir with details
   getAll: async () => {
     try {
       const [rows] = await db.query(`
@@ -43,23 +46,40 @@ const ParkirModel = {
       `);
       return rows;
     } catch (error) {
-      throw error;
+      throw new Error(`Error getting all parkir: ${error.message}`);
     }
   },
 
-  // Cari parkir berdasarkan ID
+  // Find parkir by ID
   findById: async (id_parkir) => {
     try {
       const [rows] = await db.query(`
-        SELECT p.*, k.plat_nomor, k.jenis_kendaraan, t.tarif_perjam
+        SELECT p.*, k.plat_nomor, k.jenis_kendaraan, t.tarif_perjam, t.tarif_maksimal
         FROM tableparkir p
         JOIN tablekendaraan k ON p.id_kendaraan = k.Id_kendaraan
         JOIN tabletarif t ON p.id_tarif = t.id_tarif
         WHERE p.id_parkir = ?
       `, [id_parkir]);
-      return rows[0];
+      
+      return rows[0] || null;
     } catch (error) {
-      throw error;
+      throw new Error(`Error finding parkir by ID: ${error.message}`);
+    }
+  },
+
+  // Update parkir (for check-out)
+  update: async (id_parkir, data) => {
+    try {
+      const { waktu_keluar, durasi_jam, total_biaya, status } = data;
+      const [result] = await db.query(
+        `UPDATE tableparkir 
+         SET waktu_keluar = ?, durasi_jam = ?, total_biaya = ?, status = ?
+         WHERE id_parkir = ?`,
+        [waktu_keluar, durasi_jam, total_biaya, status, id_parkir]
+      );
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(`Error updating parkir: ${error.message}`);
     }
   }
 };

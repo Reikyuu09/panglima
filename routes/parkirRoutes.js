@@ -1,14 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const ParkirController = require('../controllers/parkirController');
+const ParkirController = require('../controllers/ParkirController');
+const { validateCheckIn, validateUpdateKendaraan } = require('../validators/parkirValidator');
 
-// Route untuk Check-In
-router.post('/checkin', ParkirController.checkIn);
+// Check-In Endpoint
+router.post('/checkin', validateCheckIn, ParkirController.checkIn);
 
-// Route untuk testing - ambil semua data parkir
+// Kendaraan CRUD Endpoints
+router.post('/kendaraan', validateUpdateKendaraan, ParkirController.createKendaraan);
+router.get('/kendaraan', ParkirController.getAllKendaraan);
+router.put('/kendaraan/:id', validateUpdateKendaraan, ParkirController.updateKendaraan);
+router.delete('/kendaraan/:id', ParkirController.deleteKendaraan);
+
+// Parkir Endpoints (untuk testing & laporan)
 router.get('/', ParkirController.getAllParkir);
-
-// Route untuk testing - ambil parkir by ID
 router.get('/:id', ParkirController.getParkirById);
 
 module.exports = router;

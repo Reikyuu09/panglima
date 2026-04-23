@@ -1,26 +1,54 @@
 const express = require('express');
+const cors = require('cors');
+require('dotenv').config();
+
 const app = express();
-const PORT = 3000;
 
-// Middleware dasar agar bisa baca JSON
+// Middleware
+app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Import routes
-const apiRoutes = require('./routes/api');
+// Routes
+const parkirRoutes = require('./routes/parkirRoutes');
+app.use('/api/parkir', parkirRoutes);
 
-// Gunakan routes
-app.use('/api', apiRoutes);
-
-// Halaman Utama (Tes Server)
+// Root endpoint
 app.get('/', (req, res) => {
-    res.json({
-        status: 200,
-        message: "Server Parkir Berhasil Jalan!",
-        kelompok: "Sistem Informasi Parkir"
-    });
+  res.json({
+    status: 200,
+    message: 'API Sistem Informasi Parkir',
+    version: '1.0.0',
+    endpoints: {
+      checkin: 'POST /api/parkir/checkin',
+      kendaraan: 'GET/POST/PUT/DELETE /api/parkir/kendaraan',
+      parkir: 'GET /api/parkir'
+    }
+  });
 });
 
-// Jalankan Server
-app.listen(PORT, () => {
-    console.log(`Server berjalan di http://localhost:${PORT}`);
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    status: 404,
+    message: 'Endpoint tidak ditemukan'
+  });
 });
+
+// Error handler middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).json({
+    status: 500,
+    message: 'Terjadi kesalahan server',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server berjalan di http://localhost:${PORT}`);
+});
+
+module.exports = app;

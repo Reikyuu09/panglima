@@ -4,50 +4,32 @@ const ParkirModel = require('../models/ParkirModel');
 
 const ParkirController = {
   // =====================
-  // FITUR CHECK-IN
+  // CHECK-IN (INPUT KENDARAAN MASUK)
   // =====================
   checkIn: async (req, res) => {
     try {
       const { plat_nomor, jenis_kendaraan } = req.body;
 
-      // 1. Validasi input
-      if (!plat_nomor || !jenis_kendaraan) {
-        return res.status(400).json({
-          status: 400,
-          message: 'Plat nomor dan jenis kendaraan wajib diisi',
-          data: null
-        });
-      }
-
-      // Validasi jenis kendaraan
-      const jenisValid = ['motor', 'mobil'];
-      if (!jenisValid.includes(jenis_kendaraan.toLowerCase())) {
-        return res.status(400).json({
-          status: 400,
-          message: 'Jenis kendaraan harus motor atau mobil',
-          data: null
-        });
-      }
-
-      // 2. Cek apakah kendaraan sudah ada yang sedang parkir
+      // 1. Cek apakah kendaraan sudah ada yang sedang parkir
       const existingParkir = await ParkirModel.findByPlatNomorAktif(plat_nomor);
       if (existingParkir) {
         return res.status(400).json({
           status: 400,
-          message: 'Kendaraan dengan plat nomor ini masih dalam status parkir aktif',
+          message: 'Kendaraan masih dalam status parkir aktif',
           data: {
             id_parkir: existingParkir.id_parkir,
+            plat_nomor: existingParkir.plat_nomor,
             waktu_masuk: existingParkir.waktu_masuk,
-            plat_nomor: existingParkir.plat_nomor
+            jenis_kendaraan: existingParkir.jenis_kendaraan
           }
         });
       }
 
-      // 3. Cari atau buat data kendaraan
+      // 2. Cari atau buat data kendaraan
       let kendaraan = await KendaraanModel.findByPlatNomor(plat_nomor);
       
       if (!kendaraan) {
-        // Kendaraan baru, buat record baru
+        // Kendaraan baru, buat record
         const id_kendaraan = await KendaraanModel.create({
           plat_nomor: plat_nomor.toUpperCase(),
           jenis_kendaraan: jenis_kendaraan.toLowerCase()
@@ -60,8 +42,8 @@ const ParkirController = {
         };
       }
 
-      // 4. Cari tarif berdasarkan jenis kendaraan
-      const tarif = await TarifModel.findByJenisKendaraan(jenis_kendaraan.toLowerCase());
+      // 3. Cari tarif berdasarkan jenis kendaraan
+      const tarif = await TarifModel.findByJenisKendaraan(jenis_kendaraan);
       
       if (!tarif) {
         return res.status(404).json({
@@ -71,7 +53,7 @@ const ParkirController = {
         });
       }
 
-      // 5. Buat record parkir baru
+      // 4. Buat record parkir baru
       const waktu_masuk = new Date();
       const id_parkir = await ParkirModel.create({
         id_kendaraan: kendaraan.Id_kendaraan,
@@ -79,7 +61,7 @@ const ParkirController = {
         waktu_masuk: waktu_masuk
       });
 
-      // 6. Response sukses
+      // 5. Response sukses
       return res.status(201).json({
         status: 201,
         message: 'Check-in berhasil',
@@ -98,13 +80,13 @@ const ParkirController = {
       return res.status(500).json({
         status: 500,
         message: 'Terjadi kesalahan server',
-        error: error.message
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
       });
     }
   },
 
   // =====================
-  // GET ALL PARKIR (Untuk testing)
+  // GET ALL PARKIR
   // =====================
   getAllParkir: async (req, res) => {
     try {
@@ -113,6 +95,7 @@ const ParkirController = {
       return res.status(200).json({
         status: 200,
         message: 'Data parkir berhasil diambil',
+        count: parkirs.length,
         data: parkirs
       });
     } catch (error) {
@@ -120,13 +103,13 @@ const ParkirController = {
       return res.status(500).json({
         status: 500,
         message: 'Terjadi kesalahan server',
-        error: error.message
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
       });
     }
   },
 
   // =====================
-  // GET PARKIR BY ID (Untuk testing)
+  // GET PARKIR BY ID
   // =====================
   getParkirById: async (req, res) => {
     try {
@@ -151,7 +134,144 @@ const ParkirController = {
       return res.status(500).json({
         status: 500,
         message: 'Terjadi kesalahan server',
-        error: error.message
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
+    }
+  },
+
+  // =====================
+  // CRUD KENDARAAN - CREATE
+  // =====================
+  createKendaraan: async (req, res) => {
+    try {
+      const { plat_nomor, jenis_kendaraan } = req.body;
+
+      // Cek apakah plat nomor sudah terdaftar
+      const existing = await KendaraanModel.findByPlatNomor(plat_nomor);
+      if (existing) {
+        return res.status(409).json({
+          status: 409,
+          message: 'Kendaraan dengan plat nomor ini sudah terdaftar',
+          data: null
+        });
+      }
+
+      const id_kendaraan = await KendaraanModel.create({
+        plat_nomor: plat_nomor.toUpperCase(),
+        jenis_kendaraan: jenis_kendaraan.toLowerCase()
+      });
+
+      return res.status(201).json({
+        status: 201,
+        message: 'Kendaraan berhasil ditambahkan',
+        data: { id_kendaraan }
+      });
+    } catch (error) {
+      console.error('Error create kendaraan:', error);
+      return res.status(500).json({
+        status: 500,
+        message: 'Terjadi kesalahan server',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
+    }
+  },
+
+  // =====================
+  // CRUD KENDARAAN - GET ALL
+  // =====================
+  getAllKendaraan: async (req, res) => {
+    try {
+      const kendaraans = await KendaraanModel.getAll();
+      
+      return res.status(200).json({
+        status: 200,
+        message: 'Data kendaraan berhasil diambil',
+        count: kendaraans.length,
+        data: kendaraans
+      });
+    } catch (error) {
+      console.error('Error get all kendaraan:', error);
+      return res.status(500).json({
+        status: 500,
+        message: 'Terjadi kesalahan server',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
+    }
+  },
+
+  // =====================
+  // CRUD KENDARAAN - UPDATE
+  // =====================
+  updateKendaraan: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { plat_nomor, jenis_kendaraan } = req.body;
+
+      // Cek apakah kendaraan ada
+      const existing = await KendaraanModel.findByPlatNomor(plat_nomor);
+      if (existing && existing.Id_kendaraan != id) {
+        return res.status(409).json({
+          status: 409,
+          message: 'Plat nomor sudah digunakan kendaraan lain',
+          data: null
+        });
+      }
+
+      const affected = await KendaraanModel.update(id, {
+        plat_nomor,
+        jenis_kendaraan
+      });
+
+      if (affected === 0) {
+        return res.status(404).json({
+          status: 404,
+          message: 'Kendaraan tidak ditemukan',
+          data: null
+        });
+      }
+
+      return res.status(200).json({
+        status: 200,
+        message: 'Kendaraan berhasil diupdate',
+        data: null
+      });
+    } catch (error) {
+      console.error('Error update kendaraan:', error);
+      return res.status(500).json({
+        status: 500,
+        message: 'Terjadi kesalahan server',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
+    }
+  },
+
+  // =====================
+  // CRUD KENDARAAN - DELETE
+  // =====================
+  deleteKendaraan: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const affected = await KendaraanModel.delete(id);
+
+      if (affected === 0) {
+        return res.status(404).json({
+          status: 404,
+          message: 'Kendaraan tidak ditemukan',
+          data: null
+        });
+      }
+
+      return res.status(200).json({
+        status: 200,
+        message: 'Kendaraan berhasil dihapus',
+        data: null
+      });
+    } catch (error) {
+      console.error('Error delete kendaraan:', error);
+      return res.status(500).json({
+        status: 500,
+        message: 'Terjadi kesalahan server',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
       });
     }
   }
