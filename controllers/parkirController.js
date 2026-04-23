@@ -277,4 +277,71 @@ const ParkirController = {
   }
 };
 
+  // =====================
+  // KENDARAAN KELUAR & HITUNG BIAYA
+  // =====================
+  keluar: async (req, res) => {
+    try {
+      const { id_parkir } = req.body;
+
+      // 1. Ambil data parkir
+      const parkir = await ParkirModel.findById(id_parkir);
+
+      if (!parkir) {
+        return res.status(404).json({
+          status: 404,
+          message: 'Data parkir tidak ditemukan',
+          data: null
+        });
+      }
+
+      if (parkir.status === 'selesai') {
+        return res.status(400).json({
+          status: 400,
+          message: 'Kendaraan sudah keluar sebelumnya',
+          data: null
+        });
+      }
+
+      // 2. Hitung durasi
+      const waktuMasuk = new Date(parkir.waktu_masuk);
+      const waktuSekarang = new Date();
+
+      let durasi = Math.ceil((waktuSekarang - waktuMasuk) / (1000 * 60 * 60));
+
+      // 3. Hitung biaya
+      let total = durasi * parkir.tarif_perjam;
+
+      if (parkir.tarif_maksimal && total > parkir.tarif_maksimal) {
+        total = parkir.tarif_maksimal;
+      }
+
+      // 4. Update database
+      await ParkirModel.updateKeluar(id_parkir, durasi, total);
+
+      // 5. Response
+      return res.status(200).json({
+        status: 200,
+        message: 'Kendaraan keluar berhasil',
+        data: {
+          id_parkir,
+          plat_nomor: parkir.plat_nomor,
+          jenis_kendaraan: parkir.jenis_kendaraan,
+          waktu_masuk: parkir.waktu_masuk,
+          waktu_keluar: waktuSekarang,
+          durasi_jam: durasi,
+          total_biaya: total
+        }
+      });
+
+    } catch (error) {
+      console.error('Error kendaraan keluar:', error);
+      return res.status(500).json({
+        status: 500,
+        message: 'Terjadi kesalahan server',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
+    }
+  },
+
 module.exports = ParkirController;
