@@ -1,7 +1,7 @@
 const express = require('express');
 require('dotenv').config();
 const db = require('./db'); 
-const reportRoutes = require('./routes/reportRoutes');
+// const reportRoutes = require('./routes/reportRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,7 +28,7 @@ app.get('/cek-db', (req, res) => {
 });
 
 // 3. Route Laporan Parkir
-app.use('/api/laporan', reportRoutes);
+// app.use('/api/laporan', reportRoutes);
 
 // --- PENUTUP ---
 

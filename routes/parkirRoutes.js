@@ -15,6 +15,6 @@ router.delete('/kendaraan/:id', ParkirController.deleteKendaraan);
 // Parkir Endpoints (untuk testing & laporan)
 router.get('/', ParkirController.getAllParkir);
 router.get('/:id', ParkirController.getParkirById);
-router.post('/keluar', parkirController.keluar);
+router.post('/keluar', ParkirController.keluar);
 
 module.exports = router;
