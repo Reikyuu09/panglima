@@ -13,6 +13,10 @@ app.use(express.urlencoded({ extended: true }));
 const parkirRoutes = require('./routes/parkirRoutes');
 app.use('/api/parkir', parkirRoutes);
 
+const pembayaranRoutes = require("./routes/pembayaranRoutes");
+
+app.use("/api", pembayaranRoutes);
+
 // Root endpoint
 app.get('/', (req, res) => {
   res.json({
