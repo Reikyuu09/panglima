@@ -85,16 +85,16 @@ const ParkirModel = {
 };
 
 // Update saat kendaraan keluar
-updateKeluar: async (id_parkir, durasi, total) => {
-  try {
-    const [result] = await db.query(`
-      UPDATE tableparkir
-      SET waktu_keluar = NOW(),
-          durasi_jam = ?,
-          total_biaya = ?,
-          status = 'selesai'
-      WHERE id_parkir = ?
-    `, [durasi, total, id_parkir]);
+  updateKeluar: async (id_parkir, durasi, total) => {
+    try {
+      const [result] = await db.query(`
+        UPDATE tableparkir
+        SET waktu_keluar = NOW(),
+            durasi_jam = ?,
+            total_biaya = ?,
+            status = 'selesai'
+        WHERE id_parkir = ?
+      `, [durasi, total, id_parkir]);
 
     return result;
   } catch (error) {
