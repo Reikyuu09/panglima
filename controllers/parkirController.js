@@ -274,9 +274,7 @@ const ParkirController = {
         error: process.env.NODE_ENV === 'development' ? error.message : undefined
       });
     }
-  }
-};
-
+  },
   // =====================
   // KENDARAAN KELUAR & HITUNG BIAYA
   // =====================
@@ -317,7 +315,7 @@ const ParkirController = {
       }
 
       // 4. Update database
-      await ParkirModel.updateKeluar(id_parkir, durasi, total);
+      await ParkirModel.update(id_parkir, durasi, total);
 
       // 5. Response
       return res.status(200).json({
@@ -343,5 +341,8 @@ const ParkirController = {
       });
     }
   },
+};
+
+  
 
 module.exports = ParkirController;

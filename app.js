@@ -1,6 +1,8 @@
 const express = require('express');
 require('dotenv').config();
 const db = require('./db'); 
+const parkirRoutes = require('./routes/parkirRoutes');
+
 // const reportRoutes = require('./routes/reportRoutes');
 
 const app = express();
@@ -26,6 +28,9 @@ app.get('/cek-db', (req, res) => {
     res.send('Koneksi Database Aman! Hasil query: ' + results[0].hasil);
   });
 });
+
+// Route parkir
+app.use('/api/parkir', parkirRoutes);
 
 // 3. Route Laporan Parkir
 // app.use('/api/laporan', reportRoutes);
