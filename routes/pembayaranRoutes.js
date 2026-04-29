@@ -1,7 +1,14 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const pembayaranController = require("../controllers/pembayaranController");
+const PembayaranController = require('../controllers/pembayaranController');
 
-router.post("/pembayaran", pembayaranController.prosesPembayaran);
+// Proses pembayaran
+router.post('/proses', PembayaranController.prosesPembayaran);
+
+// Get all pembayaran
+router.get('/', PembayaranController.getAllPembayaran);
+
+// Get pembayaran by id_parkir
+router.get('/parkir/:id_parkir', PembayaranController.getPembayaranByParkirId);
 
 module.exports = router;
