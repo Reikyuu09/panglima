@@ -3,6 +3,7 @@ require('dotenv').config();
 const db = require('./db'); 
 const parkirRoutes = require('./routes/parkirRoutes');
 const pembayaranRoutes = require('./routes/pembayaranRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 // const reportRoutes = require('./routes/reportRoutes');
 
@@ -29,6 +30,9 @@ app.get('/cek-db', (req, res) => {
     res.send('Koneksi Database Aman! Hasil query: ' + results[0].hasil);
   });
 });
+
+// Route user
+app.use('/api/users', userRoutes);
 
 // Route parkir
 app.use('/api/parkir', parkirRoutes);

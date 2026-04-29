@@ -6,7 +6,7 @@ exports.prosesPembayaran = async (req, res) => {
 
     // 1. Ambil data parkir
     const [parkir] = await db.query(
-      "SELECT total_biaya FROM tableparkir WHERE id = ?",
+      "SELECT total_biaya FROM tableparkir WHERE id_parkir = ?",
       [id_parkir]
     );
 
@@ -20,7 +20,7 @@ exports.prosesPembayaran = async (req, res) => {
     if (jumlah_bayar < total) {
       return res.status(400).json({ message: "Uang tidak cukup" });
     }
-    
+
     // 3. Hitung kembalian
     const kembalian = jumlah_bayar - total;
 
@@ -34,7 +34,7 @@ exports.prosesPembayaran = async (req, res) => {
 
     // 5. Update status parkir (optional tapi bagus)
     await db.query(
-      "UPDATE tableparkir SET status = 'selesai' WHERE id = ?",
+      "UPDATE tableParkir SET status = 'selesai' WHERE id = ?",
       [id_parkir]
     );
 
