@@ -1,5 +1,6 @@
 const PembayaranModel = require('../models/PembayaranModels');
 const ParkirModel = require('../models/ParkirModel');
+const db = require('../config/database');
 
 const PembayaranController = {
   // Proses Pembayaran
@@ -22,7 +23,7 @@ const PembayaranController = {
         return res.status(400).json({
           status: 400,
           message: 'Metode pembayaran harus tunai, qris, atau e-wallet',
-          data: null  // Diperbaiki: tambah key 'data:'
+          data: null
         });
       }
 
@@ -43,12 +44,52 @@ const PembayaranController = {
         return res.status(400).json({
           status: 400,
           message: 'Pembayaran untuk parkir ini sudah dilakukan',
-          data: existingPembayaran  // Diperbaiki: tambah key 'data:'
+          data: existingPembayaran
         });
       }
 
-      // 5. Hitung kembalian
-      const totalBiaya = parseInt(parkir.total_biaya || 0);
+      // 5. ✅ HITUNG TOTAL BIAYA OTOMATIS (Jika masih NULL/0)
+      let totalBiaya = parseInt(parkir.total_biaya);
+      
+      if (!totalBiaya || totalBiaya === 0) {
+        // Ambil tarif sesuai id_tarif dari database
+        const [tarifRows] = await db.query(
+          'SELECT tarif_perjam, tarif_maksimal FROM tabletarif WHERE id_tarif = ?',
+          [parkir.id_tarif]
+        );
+
+        let tarifPerJam = 2000;   // Default fallback
+        let tarifMaksimal = 20000; // Default fallback
+
+        if (tarifRows && tarifRows.length > 0) {
+          tarifPerJam = parseInt(tarifRows[0].tarif_perjam);
+          tarifMaksimal = parseInt(tarifRows[0].tarif_maksimal);
+        }
+
+        // Hitung durasi parkir
+        const waktuMasuk = new Date(parkir.waktu_masuk);
+        const waktuKeluar = new Date();
+        const durasiMs = waktuKeluar - waktuMasuk;
+        let durasiJam = Math.ceil(durasiMs / (1000 * 60 * 60));
+        if (durasiJam < 1) durasiJam = 1; // Minimal 1 jam
+
+        // Hitung total biaya
+        totalBiaya = durasiJam * tarifPerJam;
+
+        // ✅ Capping: Jangan melebihi tarif maksimal harian
+        if (totalBiaya > tarifMaksimal) {
+          totalBiaya = tarifMaksimal;
+        }
+
+        // Update tableparkir dengan data check-out
+        await db.query(`
+          UPDATE tableparkir 
+          SET waktu_keluar = ?, durasi_jam = ?, total_biaya = ?, status = 'selesai'
+          WHERE id_parkir = ?
+        `, [waktuKeluar, durasiJam, totalBiaya, id_parkir]);
+      }
+
+      // 6. Hitung kembalian
       const bayar = parseInt(jumlah_bayar);
       
       if (bayar < totalBiaya) {
@@ -64,7 +105,7 @@ const PembayaranController = {
 
       const kembalian = bayar - totalBiaya;
 
-      // 6. Create pembayaran
+      // 7. Create pembayaran
       const id_pembayaran = await PembayaranModel.create({
         id_parkir,
         id_user: id_user || null,
@@ -74,7 +115,7 @@ const PembayaranController = {
         status_pembayaran: 'lunas'
       });
 
-      // 7. Response sukses
+      // 8. Response sukses
       return res.status(201).json({
         status: 201,
         message: 'Pembayaran berhasil',
@@ -109,7 +150,7 @@ const PembayaranController = {
         status: 200,
         message: 'Data pembayaran berhasil diambil',
         count: pembayarans.length,
-        data: pembayarans  // Diperbaiki: tambah key 'data:'
+        data: pembayarans
       });
     } catch (error) {
       console.error('Error get all pembayaran:', error);
@@ -138,7 +179,7 @@ const PembayaranController = {
       return res.status(200).json({
         status: 200,
         message: 'Data pembayaran berhasil diambil',
-        data: pembayaran  // Diperbaiki: tambah key 'data:'
+        data: pembayaran
       });
     } catch (error) {
       console.error('Error get pembayaran by id:', error);
