@@ -41,7 +41,7 @@ app.use('/api/parkir', parkirRoutes);
 app.use('/api/pembayaran', pembayaranRoutes);
 
 // 3. Route Laporan Parkir
-// app.use('/api/laporan', reportRoutes);
+app.use('/api/riwayat', reportRoutes);
 
 // --- PENUTUP ---
 

@@ -14,8 +14,10 @@ const parkirRoutes = require('./routes/parkirRoutes');
 app.use('/api/parkir', parkirRoutes);
 
 const pembayaranRoutes = require("./routes/pembayaranRoutes");
-
 app.use("/api", pembayaranRoutes);
+
+const reportRoutes = require('./routes/reportRoutes');
+app.use('/api/laporan', reportRoutes);
 
 // Root endpoint
 app.get('/', (req, res) => {
