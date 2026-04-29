@@ -73,9 +73,9 @@ const ParkirModel = {
       const { waktu_keluar, durasi_jam, total_biaya, status } = data;
       const [result] = await db.query(
         `UPDATE tableparkir 
-         SET waktu_keluar = ?, durasi_jam = ?, total_biaya = ?, status = ?
+         SET waktu_keluar = ?, durasi_jam = ?, total_biaya = ?, status = "selesai"
          WHERE id_parkir = ?`,
-        [waktu_keluar, durasi_jam, total_biaya, status, id_parkir]
+        [waktu_keluar, durasi_jam, total_biaya, id_parkir]
       );
       return result.affectedRows;
     } catch (error) {
