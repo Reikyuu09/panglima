@@ -13,46 +13,31 @@ app.use(express.urlencoded({ extended: true }));
 const parkirRoutes = require('./routes/parkirRoutes');
 app.use('/api/parkir', parkirRoutes);
 
-const pembayaranRoutes = require("./routes/pembayaranRoutes");
-
-app.use("/api", pembayaranRoutes);
+const pembayaranRoutes = require('./routes/pembayaranRoutes');  // ← TAMBAHKAN INI
+app.use('/api/pembayaran', pembayaranRoutes);  // ← TAMBAHKAN INI
 
 // Root endpoint
 app.get('/', (req, res) => {
   res.json({
     status: 200,
     message: 'API Sistem Informasi Parkir',
-    version: '1.0.0',
-    endpoints: {
-      checkin: 'POST /api/parkir/checkin',
-      kendaraan: 'GET/POST/PUT/DELETE /api/parkir/kendaraan',
-      parkir: 'GET /api/parkir'
-    }
+    version: '1.0.0'
   });
 });
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({
-    status: 404,
-    message: 'Endpoint tidak ditemukan'
-  });
-});
-
-// Error handler middleware
+// Error handler
 app.use((err, req, res, next) => {
   console.error('Error:', err);
   res.status(500).json({
     status: 500,
-    message: 'Terjadi kesalahan server',
-    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    message: 'Terjadi kesalahan server'
   });
 });
 
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server berjalan di http://localhost:${PORT}`);
+  console.log(`🚀 Server berjalan di http://localhost:${PORT}`);
 });
 
 module.exports = app;
