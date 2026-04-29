@@ -36,6 +36,35 @@ async function login(req, res) {
     }
 }
 
+async function signIn(req, res) {
+    try {
+        const { username, password, name, role } = req.body;
+
+        // Validasi input sederhana
+        if (!username || !password || !name || !role) {
+            return res.status(400).json({
+                success: false,
+                message: "Semua data (username, password, name, role) wajib diisi"
+            });
+        }
+
+        const result = await userService.createUser(db, { username, password, name, role });
+        
+        return res.status(201).json({
+            success: true,
+            message: "User berhasil didaftarkan",
+            userId: result.insertId
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Gagal melakukan pendaftaran user",
+            error: error.message
+        });
+    }
+}
+
 module.exports = {
-    login
+    login,
+    signIn
 };
