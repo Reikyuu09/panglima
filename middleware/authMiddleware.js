@@ -1,27 +1,46 @@
 const jwt = require('jsonwebtoken');
-// Middleware untuk Authentication (Cek login)
-const authenticateToken = (req, res, next) => {
-    const token = req.header('Authorization')?.split(' ')[1];
-    if (!token) return res.status(401).json({ message: 'Akses ditolak, token tidak ada' });
 
-    try {
-        const verified = jwt.verify(token, 'panglima'); // Ganti dengan secret key kamu
-        req.user = verified;
-        next();
-    } catch (err) {
-        res.status(400).json({ message: 'Token tidak valid' });
+const authMiddleware = (req, res, next) => {
+  try {
+    // Ambil token dari header Authorization
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader) {
+      return res.status(401).json({
+        success: false,
+        message: 'Token tidak ditemukan. Silakan login terlebih dahulu'
+      });
     }
-};
 
-// Middleware untuk Authorization (Role-based access)
-const authorizeRole = (role) => {
-    return (req, res, next) => {
-        // Cek apakah role user sesuai dengan yang diizinkan (misal: 'admin')
-        if (req.user.role !== role) {
-            return res.status(403).json({ message: 'Akses dilarang: Anda bukan ' + role });
-        }
-        next();
+    // Format: "Bearer <token>"
+    const token = authHeader.split(' ')[1];
+    
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: 'Token tidak valid'
+      });
+    }
+
+    // Verifikasi token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    
+    // Simpan user info di request
+    req.user = {
+      id: decoded.id,
+      username: decoded.username,
+      role: decoded.role
     };
+
+    next();
+  } catch (error) {
+    console.error('Auth middleware error:', error);
+    return res.status(401).json({
+      success: false,
+      message: 'Token tidak valid atau kadaluarsa',
+      error: error.message
+    });
+  }
 };
 
-module.exports = { authenticateToken, authorizeRole };
+module.exports = authMiddleware;

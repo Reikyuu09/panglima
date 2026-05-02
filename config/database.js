@@ -15,9 +15,9 @@ const pool = mysql.createPool({
 // Test connection
 pool.getConnection((err, connection) => {
   if (err) {
-    console.error('Gagal koneksi ke database:', err.message);
+    console.error('❌ Gagal koneksi ke database:', err.message);
   } else {
-    console.log('Terhubung ke database db_parkir');
+    console.log('✅ Terhubung ke database db_parkir');
     connection.release();
   }
 });
