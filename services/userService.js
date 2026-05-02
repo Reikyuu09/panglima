@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 async function login(db, username, password) {
     try {
         const [rows] = await db.execute(
@@ -14,6 +15,12 @@ async function login(db, username, password) {
         if (user.password !== password) {
             return { success: false, message: "Password mu salah" };
         }
+
+        const token = jwt.sign(
+            { id_user: user.id_user, role: user.role },
+            process.env.JWT_SECRET || 'panglima', // Pastikan secret sama dengan middleware
+            { expiresIn: '24h' }
+        );
 
         return {
             success: true,

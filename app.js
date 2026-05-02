@@ -4,8 +4,8 @@ const db = require('./db');
 const parkirRoutes = require('./routes/parkirRoutes');
 const pembayaranRoutes = require('./routes/pembayaranRoutes');
 const userRoutes = require('./routes/userRoutes');
-
-// const reportRoutes = require('./routes/reportRoutes');
+const { authenticateToken, authorizeRole } = require('./middleware/authMiddleware');
+const reportRoutes = require('./routes/reportRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -35,13 +35,13 @@ app.get('/cek-db', (req, res) => {
 app.use('/api/users', userRoutes);
 
 // Route parkir
-app.use('/api/parkir', parkirRoutes);
+app.use('/api/parkir',authenticateToken, parkirRoutes);
 
 // Route pembayaran
-app.use('/api/pembayaran', pembayaranRoutes);
+app.use('/api/pembayaran',authenticateToken, pembayaranRoutes);
 
 // 3. Route Laporan Parkir
-app.use('/api/riwayat', reportRoutes);
+app.use('/api/riwayat',authenticateToken, authorizeRole('admin'), reportRoutes);
 
 // --- PENUTUP ---
 

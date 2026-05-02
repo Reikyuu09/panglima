@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const ParkirController = require('../controllers/ParkirController');
 const { validateCheckIn, validateUpdateKendaraan } = require('../validators/parkirValidator');
-
 // Check-In Endpoint
 router.post('/checkin', validateCheckIn, ParkirController.checkIn);
 
