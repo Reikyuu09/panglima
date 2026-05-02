@@ -48,7 +48,7 @@ const PembayaranController = {
         });
       }
 
-      // 5. ✅ HITUNG TOTAL BIAYA OTOMATIS (Jika masih NULL/0)
+      // 5.  HITUNG TOTAL BIAYA OTOMATIS (Jika masih NULL/0)
       let totalBiaya = parseInt(parkir.total_biaya);
       
       if (!totalBiaya || totalBiaya === 0) {
@@ -76,7 +76,7 @@ const PembayaranController = {
         // Hitung total biaya
         totalBiaya = durasiJam * tarifPerJam;
 
-        // ✅ Capping: Jangan melebihi tarif maksimal harian
+        //  Capping: Jangan melebihi tarif maksimal harian
         if (totalBiaya > tarifMaksimal) {
           totalBiaya = tarifMaksimal;
         }
