@@ -1,51 +1,65 @@
 const express = require('express');
+const cors = require('cors');
 require('dotenv').config();
-const db = require('./db'); 
-const parkirRoutes = require('./routes/parkirRoutes');
-const pembayaranRoutes = require('./routes/pembayaranRoutes');
-const userRoutes = require('./routes/userRoutes');
-
-// const reportRoutes = require('./routes/reportRoutes');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Middleware
+app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// --- ROUTES ---
+// Routes
+const authRoutes = require('./routes/authRoutes');
+const parkirRoutes = require('./routes/parkirRoutes');
+const pembayaranRoutes = require('./routes/pembayaranRoutes');
+const reportRoutes = require('./routes/reportRoutes');
+const userRoutes = require('./routes/userRoutes');
 
-// 1. Route Beranda
+// Register routes
+app.use('/api/auth', authRoutes);
+app.use('/api/parkir', parkirRoutes);
+app.use('/api/pembayaran', pembayaranRoutes);
+app.use('/api/laporan', reportRoutes);
+app.use('/api/users', userRoutes);
+
+// Root endpoint
 app.get('/', (req, res) => {
-  res.send('Server Parkir Panglima berjalan!');
-});
-
-// 2. Route Cek Koneksi Database
-app.get('/cek-db', (req, res) => {
-  db.query('SELECT 1 + 1 AS hasil', (err, results) => {
-    if (err) {
-      console.error('Database error:', err.message);
-      return res.status(500).send('Database tidak terhubung: ' + err.message);
+  res.json({
+    success: true,
+    message: 'API Sistem Informasi Parkir',
+    version: '1.0.0',
+    endpoints: {
+      auth: '/api/auth/login',
+      parkir: '/api/parkir',
+      pembayaran: '/api/pembayaran',
+      laporan: '/api/laporan'
     }
-    res.send('Koneksi Database Aman! Hasil query: ' + results[0].hasil);
   });
 });
 
-// Route user
-app.use('/api/users', userRoutes);
-
-// Route parkir
-app.use('/api/parkir', parkirRoutes);
-
-// Route pembayaran
-app.use('/api/pembayaran', pembayaranRoutes);
-
-// 3. Route Laporan Parkir
-// app.use('/api/laporan', reportRoutes);
-
-// --- PENUTUP ---
-
-// Menjalankan server (Selalu di paling bawah)
-app.listen(PORT, () => {
-  console.log(`Server jalan di http://localhost:${PORT}`);
+// 404 Handler
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'Endpoint tidak ditemukan'
+  });
 });
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).json({
+    success: false,
+    message: 'Terjadi kesalahan server',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server berjalan di http://localhost:${PORT}`);
+});
+
+module.exports = app;
