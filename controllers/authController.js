@@ -37,7 +37,7 @@ const AuthController = {
       res.status(201).json({
         success: true,
         message: 'User berhasil didaftarkan',
-        data: { id_user: userId }  // ← ✅ Tambah key "data:"
+        data: { id_user: userId }  // ←  Tambah key "data:"
       });
 
     } catch (error) {
@@ -96,7 +96,7 @@ const AuthController = {
       res.status(200).json({
         success: true,
         message: 'Login berhasil',
-        data: {  // ← ✅ Tambah key "data:" DI SINI!
+        data: {  // ←  Tambah key "data:" DI SINI!
           token,
           user: {
             id_user: user.id_user,
