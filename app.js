@@ -15,6 +15,7 @@ const parkirRoutes = require('./routes/parkirRoutes');
 const pembayaranRoutes = require('./routes/pembayaranRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const userRoutes = require('./routes/userRoutes');
+const apiRoutes = require('./routes/api');
 
 // Register routes
 app.use('/api/auth', authRoutes);
@@ -22,6 +23,7 @@ app.use('/api/parkir', parkirRoutes);
 app.use('/api/pembayaran', pembayaranRoutes);
 app.use('/api/laporan', reportRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api', apiRoutes); 
 
 
 // Root endpoint

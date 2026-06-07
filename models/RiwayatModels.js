@@ -1,4 +1,4 @@
-const db = require('../db');
+const db = require('../config/database');
 
 const getRiwayatParkir = (startDate, endDate) => {
     return new Promise((resolve, reject) => {
