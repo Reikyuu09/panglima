@@ -1,0 +1,26 @@
+.container {
+  background-color: #1a1a2e;
+  color: #aaa;
+  margin-top: auto;
+}
+
+.footer {
+  padding: 1.5rem 2rem;
+  text-align: center;
+}
+
+.footer__title {
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+.footer__text {
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.footer__copy {
+  font-size: 0.75rem;
+  color: #666;
+}
