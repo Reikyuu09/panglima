@@ -71,7 +71,10 @@ const PembayaranController = {
         const waktuKeluar = new Date();
         const durasiMs = waktuKeluar - waktuMasuk;
         let durasiJam = Math.ceil(durasiMs / (1000 * 60 * 60));
-        if (durasiJam < 1) durasiJam = 1; // Minimal 1 jam
+        
+        if (durasiJam < 1) {
+          durasiJam = 1;
+        }
 
         // Hitung total biaya
         totalBiaya = durasiJam * tarifPerJam;
@@ -113,6 +116,17 @@ const PembayaranController = {
         metode_pembayaran: metode_pembayaran.toLowerCase(),
         kembalian,
         status_pembayaran: 'lunas'
+      });
+
+      // Update data parkir menjadi selesai
+      await ParkirModel.update(id_parkir, {
+        waktu_keluar: new Date(),
+        durasi_jam: Math.ceil(
+          (new Date() - new Date(parkir.waktu_masuk))
+          / (1000 * 60 * 60)
+        ),
+        total_biaya: totalBiaya,
+        status: 'selesai'
       });
 
       // 8. Response sukses

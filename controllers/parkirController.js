@@ -247,11 +247,11 @@ const ParkirController = {
     const durasi = Math.ceil((new Date(waktu_keluar) - new Date(waktu_masuk)) / (1000 * 60 * 60));
     const biaya = durasi * tarifPerJam;
 
-    await db.query(`
-      UPDATE tableparkir 
-      SET waktu_keluar = ?, durasi_jam = ?, total_biaya = ?, status = 'selesai'
-      WHERE id_parkir = ?
-    `, [waktu_keluar, durasi, biaya, id_parkir]);
+    // await db.query(`
+    //   UPDATE tableparkir 
+    //   SET waktu_keluar = ?, durasi_jam = ?, total_biaya = ?, status = 'selesai'
+    //   WHERE id_parkir = ?
+    // `, [waktu_keluar, durasi, biaya, id_parkir]);
   },
 
   // =====================
