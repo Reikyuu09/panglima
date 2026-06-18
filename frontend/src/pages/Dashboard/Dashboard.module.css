@@ -1,0 +1,157 @@
+.container {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.loading {
+  padding: 3rem;
+  text-align: center;
+  color: #6c757d;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.welcome {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.date {
+  color: #6c757d;
+  font-size: 0.85rem;
+  background: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.stats__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+@media (min-width: 768px) {
+  .stats__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.stat__card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-left: 4px solid var(--card-color, #4361ee);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat__card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.stat__icon {
+  font-size: 2rem;
+}
+
+.stat__label {
+  font-size: 0.8rem;
+  color: #6c757d;
+  margin: 0 0 0.25rem;
+}
+
+.stat__value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--card-color, #1a1a2e);
+  margin: 0;
+}
+
+.section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.section__title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.table__wrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.table th {
+  background: #4361ee;
+  color: #fff;
+  padding: 0.65rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:hover td {
+  background: #f8f9ff;
+}
+
+.empty {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.badge__aktif {
+  background: #d4f5ed;
+  color: #047857;
+}
+
+.badge__selesai {
+  background: #e0e7ff;
+  color: #4338ca;
+}
