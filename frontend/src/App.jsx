@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './utils/AuthContext';
-import Navbar from './components/Sidebar/Sidebar';
+import Sidebar from './components/Sidebar/Sidebar';
 import Footer from './components/Footer/Footer';
 import Login from './pages/Login/Login';
 import Dashboard from './pages/Dashboard/Dashboard';
@@ -18,7 +18,7 @@ function PrivateRoute({ children }) {
 function Layout({ children }) {
   return (
     <>
-      <Navbar />
+      <Sidebar />
       <main style={{ flex: 1, background: 'var(--bg, #f0f2ff)' }}>
         {children}
       </main>
