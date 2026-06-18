@@ -19,10 +19,22 @@ function Layout({ children }) {
   return (
     <>
       <Sidebar />
-      <main style={{ flex: 1, background: 'var(--bg, #f0f2ff)' }}>
-        {children}
+
+      <main
+        style={{
+          marginLeft: '280px',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          background: '#0f111a',
+        }}
+      >
+        <div style={{ flex: 1 }}>
+          {children}
+        </div>
+
+        <Footer />
       </main>
-      <Footer />
     </>
   );
 }
