@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './utils/AuthContext';
-import Navbar from './components/Navbar/Navbar';
+import { useState } from 'react';
+import Sidebar from './components/Sidebar/Sidebar';
 import Footer from './components/Footer/Footer';
 import Login from './pages/Login/Login';
 import Dashboard from './pages/Dashboard/Dashboard';
@@ -16,14 +17,21 @@ function PrivateRoute({ children }) {
 }
 
 function Layout({ children }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
-    <>
-      <Navbar />
-      <main style={{ flex: 1, background: 'var(--bg, #f0f2ff)' }}>
-        {children}
+    <div className="app-layout">
+      <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} />
+      <main className="main-content">
+        <button className="menu-toggle" onClick={toggleSidebar}>☰</button>
+        <div className="content-wrapper">{children}</div>
+        <Footer />
       </main>
-      <Footer />
-    </>
+    </div>
   );
 }
 

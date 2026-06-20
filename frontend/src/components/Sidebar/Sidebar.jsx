@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../utils/AuthContext';
 import styles from './Sidebar.module.css';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, onToggle }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
@@ -27,34 +27,41 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className={styles.sidebar}>
-      <div className={styles.logo}>
-        <span className={styles.logoIcon}>P</span>
-        <h2>ParkInk</h2>
-      </div>
-      <nav className={styles.nav}>
-        {menuItems.map((item) => (
-          <Link
-            key={item.path}
-            to={item.path}
-            className={`${styles.navItem} ${
-              location.pathname === item.path ? styles.active : ''
-            }`}
-          >
-            {item.label}
-          </Link>
-        ))}
-      </nav>
-      <div className={styles.userSection}>
-        <span>👤 {user?.name || user?.username || 'User'}</span>
-        <span className={styles.role}>
-          {capitalizeRole(user?.role)}
-        </span>
-        <button className={styles.logoutBtn} onClick={handleLogout}>
-          Logout
-        </button>
-      </div>
-    </aside>
+    <>
+      {isOpen && <div className={styles.overlay} onClick={onToggle} />}
+      <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`}>
+        <div className={styles.logo}>
+          <span className={styles.logoIcon}>P</span>
+          <h2>ParkInk</h2>
+          <button className={styles.closeBtn} onClick={onToggle}>✕</button>
+        </div>
+        <nav className={styles.nav}>
+          {menuItems.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`${styles.navItem} ${
+                location.pathname === item.path ? styles.active : ''
+              }`}
+              onClick={() => {
+                if (window.innerWidth <= 768) {
+                  onToggle();
+                }
+              }}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+        <div className={styles.userSection}>
+          <div className={styles.userInfo}>
+            <span className={styles.userName}>👤 {user?.name || user?.username || 'User'}</span>
+            <span className={styles.role}>{capitalizeRole(user?.role)}</span>
+          </div>
+          <button className={styles.logoutBtn} onClick={handleLogout}>Logout</button>
+        </div>
+      </aside>
+    </>
   );
 };
 
