@@ -2,7 +2,7 @@ const db = require('../config/database');
 
 const getRiwayatParkir = (startDate, endDate) => {
     return new Promise((resolve, reject) => {
-        let sql = 'SELECT * FROM parkir';
+        let sql = 'SELECT * FROM tableparkir';
         let queryParams = [];
 
        if (startDate && endDate) {
