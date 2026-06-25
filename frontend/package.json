@@ -10,13 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-<<<<<<< HEAD
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
-=======
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
->>>>>>> 6420fda8037a90314186567b3249b10c0f5a4a5a
     "react-router-dom": "^7.18.0"
   },
   "devDependencies": {
