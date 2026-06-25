@@ -24,7 +24,7 @@ function Laporan() {
     setMessage(null);
     try {
       const res = await laporanAPI.getRiwayat(startDate, endDate);
-      const data = res.data || [];
+      const data = res.data.data || [];
       setRiwayat(data);
 
       const motor = data.filter((d) => d.jenis_kendaraan === 'motor').length;
@@ -97,7 +97,7 @@ function Laporan() {
           </div>
           <div className={styles.filter__btn__wrap}>
             <button className={styles.btn__primary} onClick={loadRiwayat} disabled={loading}>
-              {loading ? 'Memuat...' : '📊 Tampilkan'}
+              🔍 Cari
             </button>
           </div>
         </div>
@@ -134,16 +134,48 @@ function Laporan() {
         </div>
       )}
 
-      {loading ? (
-        <div className={styles.loading}>Memuat data...</div>
-      ) : (
-        <div className={styles.card}>
-          <div className={styles.card__header}>
-            <h3 className={styles.card__title}>Riwayat Parkir ({riwayat.length} data)</h3>
-          </div>
-          <Table columns={columns} data={riwayat} emptyText="Tidak ada data pada rentang tanggal ini" />
+      {message && (
+        <div className={`${styles.alert} ${message.type === 'success' ? styles.alert__success : styles.alert__error}`}>
+          {message.text}
+          <button className={styles.alert__close} onClick={() => setMessage(null)}>✕</button>
         </div>
       )}
+
+      {/* Summary Stats */}
+      {!loading && riwayat.length > 0 && (
+        <div className={styles.stats__row}>
+          <div className={styles.stat__mini}>
+            <span className={styles.stat__num}>{stats.total}</span>
+            <span className={styles.stat__lbl}>Total Transaksi</span>
+          </div>
+          <div className={styles.stat__mini}>
+            <span className={styles.stat__num}>{stats.motor}</span>
+            <span className={styles.stat__lbl}>Motor</span>
+          </div>
+          <div className={styles.stat__mini}>
+            <span className={styles.stat__num}>{stats.mobil}</span>
+            <span className={styles.stat__lbl}>Mobil</span>
+          </div>
+          <div className={styles.stat__mini} style={{ '--c': '#f72585' }}>
+            <span className={styles.stat__num} style={{ color: '#f72585' }}>
+              Rp {stats.pendapatan.toLocaleString('id-ID')}
+            </span>
+            <span className={styles.stat__lbl}>Total Pendapatan</span>
+          </div>
+        </div>
+      )}
+
+    {}
+      <div className={styles.card}>
+        <div className={styles.card__header}>
+          <h3 className={styles.card__title}>Riwayat Parkir ({riwayat.length})</h3>
+        </div>
+        <Table 
+          columns={columns} 
+          data={riwayat} 
+          emptyText={loading ? "⏳ Belum ada laporan" : "Belum ada data laporan."} 
+        />
+      </div>
     </div>
   );
 }
