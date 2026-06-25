@@ -23,10 +23,11 @@
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 0.25rem;
+  color: #111827;
 }
 
 .welcome {
-  color: #6c757d;
+  color: #6b7280;
   font-size: 0.9rem;
 }
 
@@ -60,7 +61,7 @@
   align-items: center;
   gap: 1rem;
   border-left: 4px solid var(--card-color, #4361ee);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 15px rgba(0,0,0,.08);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -90,13 +91,15 @@
   background: #fff;
   border-radius: 12px;
   padding: 1.25rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,.08);
 }
 
 .section__title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 20px;
 }
 
 .table__wrapper {
@@ -109,26 +112,39 @@
   font-size: 0.9rem;
 }
 
+.table th,
+.table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
 .table th {
-  background: #4361ee;
-  color: #fff;
-  padding: 0.65rem 1rem;
-  text-align: left;
+  background: #2563eb;
+  color: white;
+  padding: 18px;
+  font-size: 14px;
   font-weight: 600;
-  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .table td {
-  padding: 0.65rem 1rem;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
+}
+
+.table tbody tr:nth-child(even) {
+  background: #f8fafc;
 }
 
 .table tr:last-child td {
   border-bottom: none;
 }
 
-.table tr:hover td {
-  background: #f8f9ff;
+.table tbody tr:hover {
+  background: #eff6ff;
+  transition: 0.2s;
 }
 
 .empty {
@@ -146,11 +162,11 @@
 }
 
 .badge__aktif {
-  background: #d4f5ed;
-  color: #047857;
+  background: #dcfce7;
+  color: #15803d;
 }
 
 .badge__selesai {
-  background: #e0e7ff;
-  color: #4338ca;
+  background: #dbeafe;
+  color: #2563eb;
 }

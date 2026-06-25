@@ -7,7 +7,7 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 30px 20px;
+  padding: 30px;
 }
 
 .footer {
@@ -28,7 +28,7 @@
   margin-bottom: 10px;
   font-size: 20px;
   font-weight: bold;
-  color: #fff;
+  color: #4361ee;
 }
 
 .logoIcon {
