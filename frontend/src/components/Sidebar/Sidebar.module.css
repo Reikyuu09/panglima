@@ -1,7 +1,7 @@
 .sidebar {
-  width: 280px;
+  width: 240px;
   height: 100vh;
-  background-color: #4361ee;
+  background-color: #111827;
   color: white;
   position: fixed;
   left: 0;
@@ -109,13 +109,12 @@
 }
 
 .navItem:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateX(5px);
+  background: rgba(255,255,255,0.08);
 }
 
 .navItem.active {
-  background: rgba(255, 255, 255, 0.25);
-  font-weight: 600;
+  background: #2563eb;
+  color: white;
 }
 
 .userSection {
