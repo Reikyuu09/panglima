@@ -23,11 +23,10 @@
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 0.25rem;
-  color: #111827;
 }
 
 .welcome {
-  color: #6b7280;
+  color: #6c757d;
   font-size: 0.9rem;
 }
 
@@ -61,7 +60,7 @@
   align-items: center;
   gap: 1rem;
   border-left: 4px solid var(--card-color, #4361ee);
-  box-shadow: 0 4px 15px rgba(0,0,0,.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -91,15 +90,13 @@
   background: #fff;
   border-radius: 12px;
   padding: 1.25rem;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0,0,0,.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .section__title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #111827;
-  margin-bottom: 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
 }
 
 .table__wrapper {
@@ -112,39 +109,26 @@
   font-size: 0.9rem;
 }
 
-.table th,
-.table td {
-  text-align: center;
-  vertical-align: middle;
-}
-
 .table th {
-  background: #2563eb;
-  color: white;
-  padding: 18px;
-  font-size: 14px;
+  background: #4361ee;
+  color: #fff;
+  padding: 0.65rem 1rem;
+  text-align: left;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .table td {
-  padding: 20px;
-  border-bottom: 1px solid #e5e7eb;
-  color: #374151;
-}
-
-.table tbody tr:nth-child(even) {
-  background: #f8fafc;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .table tr:last-child td {
   border-bottom: none;
 }
 
-.table tbody tr:hover {
-  background: #eff6ff;
-  transition: 0.2s;
+.table tr:hover td {
+  background: #f8f9ff;
 }
 
 .empty {
@@ -162,11 +146,11 @@
 }
 
 .badge__aktif {
-  background: #dcfce7;
-  color: #15803d;
+  background: #d4f5ed;
+  color: #047857;
 }
 
 .badge__selesai {
-  background: #dbeafe;
-  color: #2563eb;
+  background: #e0e7ff;
+  color: #4338ca;
 }

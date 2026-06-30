@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const authorize = require('../middleware/authorize');
 const reportController = require('../controllers/reportController');
 
-// Bikin jalur URL: GET /api/laporan/riwayat
-router.get('/riwayat', reportController.ambilRiwayat);
+router.get('/riwayat', authorize('admin'), reportController.ambilRiwayat);
 
 module.exports = router;

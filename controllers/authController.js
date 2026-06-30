@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
 const UserModel = require('../models/userModels');
-// const bcrypt = require('bcryptjs'); // Comment out untuk testing plain text
+
+const JWT_SECRET = process.env.JWT_SECRET || 'secret-key-change-this';
 
 const AuthController = {
-  // Register User Baru
   register: async (req, res) => {
     try {
       const { username, password, name, role } = req.body;
@@ -23,13 +23,9 @@ const AuthController = {
         });
       }
 
-      // Untuk testing: password plain text
-      // Untuk production: gunakan bcrypt
-      // const hashedPassword = await bcrypt.hash(password, 10);
-
       const userId = await UserModel.create({
         username,
-        password, // plain text untuk testing
+        password,
         name,
         role: role || 'petugas'
       });
@@ -37,7 +33,7 @@ const AuthController = {
       res.status(201).json({
         success: true,
         message: 'User berhasil didaftarkan',
-        data: { id_user: userId }  // ←  Tambah key "data:"
+        data: { id_user: userId }
       });
 
     } catch (error) {
@@ -50,7 +46,6 @@ const AuthController = {
     }
   },
 
-  // Login User
   login: async (req, res) => {
     try {
       const { username, password } = req.body;
@@ -71,8 +66,6 @@ const AuthController = {
         });
       }
 
-      // Cek password (plain text untuk testing)
-      // Untuk production: const isPasswordValid = await bcrypt.compare(password, user.password);
       const isPasswordValid = (user.password === password);
 
       if (!isPasswordValid) {
@@ -82,27 +75,26 @@ const AuthController = {
         });
       }
 
-      // Generate JWT Token
       const token = jwt.sign(
         {
           id: user.id_user,
           username: user.username,
-          role: user.role
+          role: user.role?.toLowerCase()
         },
-        process.env.JWT_SECRET || 'secret-key-change-this',
+        JWT_SECRET,
         { expiresIn: '1d' }
       );
 
       res.status(200).json({
         success: true,
         message: 'Login berhasil',
-        data: {  // ←  Tambah key "data:" DI SINI!
+        data: {
           token,
           user: {
             id_user: user.id_user,
             username: user.username,
             name: user.name,
-            role: user.role
+            role: user.role?.toLowerCase()
           }
         }
       });
@@ -117,7 +109,6 @@ const AuthController = {
     }
   },
 
-  // Logout
   logout: async (req, res) => {
     res.status(200).json({
       success: true,

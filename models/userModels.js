@@ -19,7 +19,7 @@ const UserModel = {
   findById: async (id) => {
     try {
       const [rows] = await db.query(
-        'SELECT * FROM tabeluser WHERE id_user = ?',
+        'SELECT id_user, username, name, role, foto FROM tabeluser WHERE id_user = ?',
         [id]
       );
       return rows[0] || null;
@@ -29,11 +29,11 @@ const UserModel = {
     }
   },
 
-  // Get all users
+  // Get all users (tanpa password)
   findAll: async () => {
     try {
       const [rows] = await db.query(
-        'SELECT id_user, username, name, role FROM tabeluser'
+        'SELECT id_user, username, name, role, foto FROM tabeluser ORDER BY id_user DESC'
       );
       return rows;
     } catch (error) {
@@ -45,10 +45,10 @@ const UserModel = {
   // Create new user
   create: async (userData) => {
     try {
-      const { username, password, name, role } = userData;
+      const { username, password, name, role, foto } = userData;
       const [result] = await db.query(
-        'INSERT INTO tabeluser (username, password, name, role) VALUES (?, ?, ?, ?)',
-        [username, password, name, role || 'petugas']
+        'INSERT INTO tabeluser (username, password, name, role, foto) VALUES (?, ?, ?, ?, ?)',
+        [username, password, name, role || 'petugas', foto || null]
       );
       return result.insertId;
     } catch (error) {
@@ -60,11 +60,29 @@ const UserModel = {
   // Update user
   update: async (id, userData) => {
     try {
-      const { username, password, name, role } = userData;
-      const [result] = await db.query(
-        'UPDATE tabeluser SET username = ?, password = ?, name = ?, role = ? WHERE id_user = ?',
-        [username, password, name, role, id]
-      );
+      const { username, password, name, role, foto } = userData;
+      
+      let query, params;
+      
+      if (password && foto) {
+        // Update semua termasuk password dan foto
+        query = 'UPDATE tabeluser SET username = ?, password = ?, name = ?, role = ?, foto = ? WHERE id_user = ?';
+        params = [username, password, name, role, foto, id];
+      } else if (password) {
+        // Update dengan password baru, tanpa ganti foto
+        query = 'UPDATE tabeluser SET username = ?, password = ?, name = ?, role = ? WHERE id_user = ?';
+        params = [username, password, name, role, id];
+      } else if (foto) {
+        // Update foto saja, password tidak diubah
+        query = 'UPDATE tabeluser SET username = ?, name = ?, role = ?, foto = ? WHERE id_user = ?';
+        params = [username, name, role, foto, id];
+      } else {
+        // Update tanpa password dan foto
+        query = 'UPDATE tabeluser SET username = ?, name = ?, role = ? WHERE id_user = ?';
+        params = [username, name, role, id];
+      }
+      
+      const [result] = await db.query(query, params);
       return result.affectedRows;
     } catch (error) {
       console.error('Error update user:', error);
@@ -82,6 +100,20 @@ const UserModel = {
       return result.affectedRows;
     } catch (error) {
       console.error('Error delete user:', error);
+      throw error;
+    }
+  },
+
+  // Get foto by user ID
+  getFotoById: async (id) => {
+    try {
+      const [rows] = await db.query(
+        'SELECT foto FROM tabeluser WHERE id_user = ?',
+        [id]
+      );
+      return rows[0]?.foto || null;
+    } catch (error) {
+      console.error('Error getFotoById:', error);
       throw error;
     }
   }

@@ -1,4 +1,4 @@
-const BASE_URL = '/api';
+const BASE_URL = 'http://localhost:3000/api';
 
 function getToken() {
   return localStorage.getItem('token');
@@ -13,18 +13,54 @@ function getAuthHeaders() {
 }
 
 async function request(path, options = {}) {
-  const res = await fetch(`${BASE_URL}${path}`, {
-    headers: getAuthHeaders(),
-    ...options,
-  });
-  const data = await res.json();
-  if (!res.ok) {
-    throw { status: res.status, message: data.message || 'Terjadi kesalahan', data };
+  try {
+    const res = await fetch(`${BASE_URL}${path}`, {
+      headers: getAuthHeaders(),
+      ...options,
+    });
+
+    // Cek content-type untuk tahu response-nya JSON atau HTML
+    const contentType = res.headers.get('content-type');
+    
+    // Jika response bukan JSON (misalnya HTML dari Vite dev server)
+    if (!contentType || !contentType.includes('application/json')) {
+      const text = await res.text();
+      console.error('Response bukan JSON:', text.substring(0, 200));
+      throw {
+        status: res.status,
+        message: `Server mengembalikan response tidak valid. Pastikan backend running dan proxy sudah dikonfigurasi di vite.config.js`,
+        data: null
+      };
+    }
+
+    // Parse JSON
+    const data = await res.json();
+    
+    if (!res.ok) {
+      throw {
+        status: res.status,
+        message: data.message || data.pesan || 'Terjadi kesalahan',
+        data: data
+      };
+    }
+
+    return data;
+  } catch (error) {
+    // Jika error karena network (backend mati)
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw {
+        status: 0,
+        message: 'Tidak dapat terhubung ke server. Pastikan backend sudah running di port 3000.',
+        data: null
+      };
+    }
+    throw error;
   }
-  return data;
 }
 
-// Auth
+// ====================
+// Auth API
+// ====================
 export const authAPI = {
   login: (body) =>
     request('/auth/login', { method: 'POST', body: JSON.stringify(body) }),
@@ -34,7 +70,9 @@ export const authAPI = {
     request('/auth/logout', { method: 'POST' }),
 };
 
-// Parkir
+// ====================
+// Parkir API
+// ====================
 export const parkirAPI = {
   getAll: () => request('/parkir'),
   getById: (id) => request(`/parkir/${id}`),
@@ -44,7 +82,9 @@ export const parkirAPI = {
     request('/parkir/keluar', { method: 'POST', body: JSON.stringify(body) }),
 };
 
-// Kendaraan
+// ====================
+// Kendaraan API
+// ====================
 export const kendaraanAPI = {
   getAll: () => request('/parkir/kendaraan'),
   create: (body) =>
@@ -55,7 +95,9 @@ export const kendaraanAPI = {
     request(`/parkir/kendaraan/${id}`, { method: 'DELETE' }),
 };
 
-// Pembayaran
+// ====================
+// Pembayaran API
+// ====================
 export const pembayaranAPI = {
   getAll: () => request('/pembayaran'),
   getByParkirId: (id) => request(`/pembayaran/parkir/${id}`),
@@ -63,7 +105,9 @@ export const pembayaranAPI = {
     request('/pembayaran/proses', { method: 'POST', body: JSON.stringify(body) }),
 };
 
-// Laporan
+// ====================
+// Laporan API
+// ====================
 export const laporanAPI = {
   getRiwayat: (startDate, endDate) => {
     const params = new URLSearchParams();
@@ -73,7 +117,9 @@ export const laporanAPI = {
   },
 };
 
-// Users
+// ====================
+// Users API
+// ====================
 export const usersAPI = {
   getAll: () => request('/users'),
   delete: (id) => request(`/users/${id}`, { method: 'DELETE' }),

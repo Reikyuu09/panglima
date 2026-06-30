@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import { kendaraanAPI } from '../../utils/api';
+import { useAuth } from '../../utils/AuthContext';
 import Table from '../../components/Table/Table';
 import Modal from '../../components/Modal/Modal';
 import styles from './Kendaraan.module.css';
 
 function Kendaraan() {
+  const { user } = useAuth();
+  const isAdmin = user?.role?.toLowerCase() === 'admin';
+
   const [kendaraans, setKendaraans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -55,7 +59,7 @@ function Kendaraan() {
       setShowModal(false);
       loadKendaraan();
     } catch (err) {
-      setMessage({ type: 'error', text: err.message });
+      setMessage({ type: 'error', text: err.message || err.data?.message });
     } finally {
       setSubmitting(false);
     }
@@ -68,7 +72,7 @@ function Kendaraan() {
       setMessage({ type: 'success', text: 'Kendaraan berhasil dihapus' });
       loadKendaraan();
     } catch (err) {
-      setMessage({ type: 'error', text: err.message });
+      setMessage({ type: 'error', text: err.message || err.data?.message });
     }
   }
 
@@ -80,7 +84,7 @@ function Kendaraan() {
       label: 'Jenis',
       render: (v) => <span style={{ textTransform: 'capitalize' }}>{v}</span>,
     },
-    {
+    ...(isAdmin ? [{
       key: 'Id_kendaraan',
       label: 'Aksi',
       render: (v, row) => (
@@ -89,7 +93,7 @@ function Kendaraan() {
           <button className={styles.btn__danger} onClick={() => handleDelete(row)}>Hapus</button>
         </div>
       ),
-    },
+    }] : [])
   ];
 
   return (
@@ -97,11 +101,18 @@ function Kendaraan() {
       <div className={styles.header}>
         <div>
           <h2 className={styles.title}>Data Kendaraan</h2>
-          <p className={styles.subtitle}>Kelola data kendaraan terdaftar</p>
+          <p className={styles.subtitle}>
+            {isAdmin 
+              ? 'Kelola data kendaraan terdaftar (Admin)' 
+              : 'Lihat data kendaraan terdaftar (Petugas)'}
+          </p>
         </div>
-        <button className={styles.btn__primary} onClick={openAdd}>
-          ➕ Tambah Kendaraan
-        </button>
+        
+        {isAdmin && (
+          <button className={styles.btn__primary} onClick={openAdd}>
+            ➕ Tambah Kendaraan
+          </button>
+        )}
       </div>
 
       {message && (
@@ -123,7 +134,7 @@ function Kendaraan() {
         </div>
       )}
 
-      {showModal && (
+      {isAdmin && showModal && (
         <Modal
           title={editData ? 'Edit Kendaraan' : 'Tambah Kendaraan'}
           onClose={() => setShowModal(false)}

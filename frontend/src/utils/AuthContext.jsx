@@ -13,9 +13,14 @@ export function AuthProvider({ children }) {
   });
 
   function login(userData, token) {
+    const normalizedUser = {
+      ...userData,
+      role: userData.role?.toLowerCase() || 'petugas'
+    };
+    
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
+    localStorage.setItem('user', JSON.stringify(normalizedUser));
+    setUser(normalizedUser);
   }
 
   function logout() {
