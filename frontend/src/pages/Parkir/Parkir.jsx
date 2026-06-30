@@ -102,10 +102,10 @@ function Parkir() {
         </div>
         <div className={styles.header__actions}>
           <button className={styles.btn__primary} onClick={() => setShowCheckIn(true)}>
-            ➕ Check-In
+            Check-In
           </button>
           <button className={styles.btn__warning} onClick={() => setShowKeluar(true)}>
-            🚗 Kendaraan Keluar
+            Kendaraan Keluar
           </button>
         </div>
       </div>
@@ -171,7 +171,7 @@ function Parkir() {
 
       {/* Modal Keluar */}
       {showKeluar && (
-        <Modal title="🚗 Kendaraan Keluar" onClose={() => setShowKeluar(false)}>
+        <Modal title="Kendaraan Keluar" onClose={() => setShowKeluar(false)}>
           <form onSubmit={handleKeluar} className={styles.form}>
             <div className={styles.form__group}>
               <label className={styles.label}>ID Parkir</label>

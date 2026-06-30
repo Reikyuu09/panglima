@@ -125,7 +125,7 @@ function Kendaraan() {
 
       {showModal && (
         <Modal
-          title={editData ? '✏️ Edit Kendaraan' : '➕ Tambah Kendaraan'}
+          title={editData ? 'Edit Kendaraan' : 'Tambah Kendaraan'}
           onClose={() => setShowModal(false)}
         >
           <form onSubmit={handleSubmit} className={styles.form}>
