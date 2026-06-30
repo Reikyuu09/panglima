@@ -1,14 +1,34 @@
 const reportModel = require('../models/RiwayatModels');
 
 const ambilRiwayat = async (req, res) => {
+    console.log('\n========================================');
+    console.log('MENDAPAT REQUEST LAPORAN');
+    console.log('Query params:', req.query);
+    
     try {
-        // Tangkap tanggal dari URL (misal: ?startDate=2023-10-01&endDate=2023-10-31)
         const { startDate, endDate } = req.query;
 
-        // Panggil model yang udah kita bikin di Tahap 1
+        // Validasi input
+        if (!startDate || !endDate) {
+            console.log('Validasi gagal: tanggal tidak lengkap');
+            return res.status(400).json({
+                status: 'error',
+                pesan: 'startDate dan endDate wajib diisi',
+                data: []
+            });
+        }
+
+        console.log('Memanggil model getRiwayatParkir...');
+        console.log('Start:', startDate, '| End:', endDate);
+
+        // Panggil model
         const dataParkir = await reportModel.getRiwayatParkir(startDate, endDate);
 
-        // Kalau sukses, kirim datanya
+        console.log('Model berhasil return data');
+        console.log('Total rows:', dataParkir.length);
+        console.log('========================================\n');
+
+        // Kirim response
         res.status(200).json({
             status: 'success',
             pesan: 'Berhasil mengambil riwayat parkir',
@@ -17,11 +37,17 @@ const ambilRiwayat = async (req, res) => {
         });
 
     } catch (error) {
-        // Kalau error database, kasih tau
+        console.error('\n========================================');
+        console.error('ERROR DI CONTROLLER:');
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+        console.error('========================================\n');
+        
         res.status(500).json({
             status: 'error',
             pesan: 'Terjadi kesalahan di server',
-            error: error.message
+            error: error.message,
+            data: []
         });
     }
 };

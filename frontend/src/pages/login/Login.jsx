@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { authAPI } from '../../utils/api';
 import { useAuth } from '../../utils/AuthContext';
 import styles from './Login.module.css';
@@ -34,7 +34,10 @@ function Login() {
     <div className={styles.container}>
       <div className={styles.card}>
         <div className={styles.card__header}>
-          <h1 className={styles.brand}>🅿️ ParkInk</h1>
+          {/* ✅ Logo sekarang bisa diklik untuk ke landing page */}
+          <Link to="/" className={styles.brand}>
+            🅿️ ParkInk
+          </Link>
           <p className={styles.subtitle}>Sistem Informasi Manajemen Parkir</p>
         </div>
         <form className={styles.form} onSubmit={handleSubmit}>
@@ -73,6 +76,10 @@ function Login() {
             {loading ? 'Memproses...' : 'Login'}
           </button>
         </form>
+
+        <div className={styles.footer}>
+          Belum punya akun? <Link to="/register" className={styles.link}>Daftar di sini</Link>
+        </div>
       </div>
     </div>
   );

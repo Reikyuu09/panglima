@@ -8,12 +8,15 @@ const Sidebar = ({ isOpen, onToggle }) => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
+  const isAdmin = user?.role?.toLowerCase() === 'admin';
+
   const menuItems = [
     { path: '/dashboard', label: 'Dashboard' },
     { path: '/parkir', label: 'Parkir' },
     { path: '/kendaraan', label: 'Kendaraan' },
     { path: '/pembayaran', label: 'Pembayaran' },
-    { path: '/laporan', label: 'Laporan' },
+    ...(isAdmin ? [{ path: '/laporan', label: 'Laporan' }] : []),
+    ...(isAdmin ? [{ path: '/petugas', label: 'Kelola Petugas' }] : []),
   ];
 
   const handleLogout = () => {

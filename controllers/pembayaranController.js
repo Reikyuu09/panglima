@@ -3,12 +3,10 @@ const ParkirModel = require('../models/ParkirModel');
 const db = require('../config/database');
 
 const PembayaranController = {
-  // Proses Pembayaran
   prosesPembayaran: async (req, res) => {
     try {
       const { id_parkir, id_user, metode_pembayaran, jumlah_bayar } = req.body;
 
-      // 1. Validasi input
       if (!id_parkir || !metode_pembayaran || !jumlah_bayar) {
         return res.status(400).json({
           status: 400,
@@ -17,7 +15,6 @@ const PembayaranController = {
         });
       }
 
-      // 2. Validasi metode pembayaran
       const metodeValid = ['tunai', 'qris', 'e-wallet'];
       if (!metodeValid.includes(metode_pembayaran.toLowerCase())) {
         return res.status(400).json({
@@ -27,7 +24,6 @@ const PembayaranController = {
         });
       }
 
-      // 3. Cek data parkir
       const parkir = await ParkirModel.findById(id_parkir);
       
       if (!parkir) {
@@ -38,7 +34,6 @@ const PembayaranController = {
         });
       }
 
-      // 4. Cek apakah sudah dibayar
       const existingPembayaran = await PembayaranModel.findByParkirId(id_parkir);
       if (existingPembayaran) {
         return res.status(400).json({
@@ -48,25 +43,22 @@ const PembayaranController = {
         });
       }
 
-      // 5.  HITUNG TOTAL BIAYA OTOMATIS (Jika masih NULL/0)
       let totalBiaya = parseInt(parkir.total_biaya);
       
       if (!totalBiaya || totalBiaya === 0) {
-        // Ambil tarif sesuai id_tarif dari database
         const [tarifRows] = await db.query(
           'SELECT tarif_perjam, tarif_maksimal FROM tabletarif WHERE id_tarif = ?',
           [parkir.id_tarif]
         );
 
-        let tarifPerJam = 2000;   // Default fallback
-        let tarifMaksimal = 20000; // Default fallback
+        let tarifPerJam = 2000;
+        let tarifMaksimal = 20000;
 
         if (tarifRows && tarifRows.length > 0) {
           tarifPerJam = parseInt(tarifRows[0].tarif_perjam);
           tarifMaksimal = parseInt(tarifRows[0].tarif_maksimal);
         }
 
-        // Hitung durasi parkir
         const waktuMasuk = new Date(parkir.waktu_masuk);
         const waktuKeluar = new Date();
         const durasiMs = waktuKeluar - waktuMasuk;
@@ -76,23 +68,21 @@ const PembayaranController = {
           durasiJam = 1;
         }
 
-        // Hitung total biaya
         totalBiaya = durasiJam * tarifPerJam;
 
-        //  Capping: Jangan melebihi tarif maksimal harian
         if (totalBiaya > tarifMaksimal) {
           totalBiaya = tarifMaksimal;
         }
 
-        // Update tableparkir dengan data check-out
+        const waktuKeluarFormatted = waktuKeluar.toISOString().slice(0, 19).replace('T', ' ');
+        
         await db.query(`
           UPDATE tableparkir 
           SET waktu_keluar = ?, durasi_jam = ?, total_biaya = ?, status = 'selesai'
           WHERE id_parkir = ?
-        `, [waktuKeluar, durasiJam, totalBiaya, id_parkir]);
+        `, [waktuKeluarFormatted, durasiJam, totalBiaya, id_parkir]);
       }
 
-      // 6. Hitung kembalian
       const bayar = parseInt(jumlah_bayar);
       
       if (bayar < totalBiaya) {
@@ -108,19 +98,21 @@ const PembayaranController = {
 
       const kembalian = bayar - totalBiaya;
 
-      // 7. Create pembayaran
+      const waktuBayar = new Date();
+      const waktuBayarFormatted = waktuBayar.toISOString().slice(0, 19).replace('T', ' ');
+      
       const id_pembayaran = await PembayaranModel.create({
         id_parkir,
         id_user: id_user || null,
         jumlah_bayar: bayar,
         metode_pembayaran: metode_pembayaran.toLowerCase(),
         kembalian,
+        waktu_bayar: waktuBayarFormatted,
         status_pembayaran: 'lunas'
       });
 
-      // Update data parkir menjadi selesai
       await ParkirModel.update(id_parkir, {
-        waktu_keluar: new Date(),
+        waktu_keluar: waktuBayarFormatted,
         durasi_jam: Math.ceil(
           (new Date() - new Date(parkir.waktu_masuk))
           / (1000 * 60 * 60)
@@ -129,7 +121,6 @@ const PembayaranController = {
         status: 'selesai'
       });
 
-      // 8. Response sukses
       return res.status(201).json({
         status: 201,
         message: 'Pembayaran berhasil',
@@ -141,7 +132,7 @@ const PembayaranController = {
           jumlah_bayar: bayar,
           kembalian,
           metode_pembayaran: metode_pembayaran.toLowerCase(),
-          waktu_bayar: new Date()
+          waktu_bayar: waktuBayarFormatted
         }
       });
 
@@ -155,7 +146,6 @@ const PembayaranController = {
     }
   },
 
-  // Get all pembayaran
   getAllPembayaran: async (req, res) => {
     try {
       const pembayarans = await PembayaranModel.getAll();
@@ -176,7 +166,6 @@ const PembayaranController = {
     }
   },
 
-  // Get pembayaran by id_parkir
   getPembayaranByParkirId: async (req, res) => {
     try {
       const { id_parkir } = req.params;

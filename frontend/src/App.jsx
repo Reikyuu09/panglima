@@ -3,12 +3,18 @@ import { AuthProvider, useAuth } from './utils/AuthContext';
 import { useState } from 'react';
 import Sidebar from './components/Sidebar/Sidebar';
 import Footer from './components/Footer/Footer';
+import LandingPage from './pages/LandingPage';
+import About from './pages/About/About';
+import Pricing from './pages/Harga/Pricing';
+import Terms from './pages/SyaratKetentuan/Terms';
 import Login from './pages/Login/Login';
+import Register from './pages/Register/Register';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Parkir from './pages/Parkir/Parkir';
 import Kendaraan from './pages/Kendaraan/Kendaraan';
 import Pembayaran from './pages/Pembayaran/Pembayaran';
 import Laporan from './pages/Laporan/Laporan';
+import Petugas from './pages/KelolaPetugas/Petugas';  // ✅ Update path ini
 import './App.css';
 
 function PrivateRoute({ children }) {
@@ -39,7 +45,15 @@ function AppRoutes() {
   const { user } = useAuth();
   return (
     <Routes>
+      {/* Public Routes */}
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/tentang" element={<About />} />
+      <Route path="/harga" element={<Pricing />} />
+      <Route path="/syarat" element={<Terms />} />
       <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
+      <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <Register />} />
+      
+      {/* Protected Routes */}
       <Route path="/dashboard" element={
         <PrivateRoute>
           <Layout><Dashboard /></Layout>
@@ -65,7 +79,13 @@ function AppRoutes() {
           <Layout><Laporan /></Layout>
         </PrivateRoute>
       } />
-      <Route path="*" element={<Navigate to={user ? '/dashboard' : '/login'} />} />
+      <Route path="/petugas" element={
+        <PrivateRoute>
+          <Layout><Petugas /></Layout>
+        </PrivateRoute>
+      } />
+      
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 }

@@ -1,9 +1,18 @@
 import { useState, useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
 import { laporanAPI } from '../../utils/api';
+import { useAuth } from '../../utils/AuthContext';
 import Table from '../../components/Table/Table';
 import styles from './Laporan.module.css';
 
 function Laporan() {
+  const { user } = useAuth();
+  const isAdmin = user?.role?.toLowerCase() === 'admin';
+
+  if (!isAdmin) {
+    return <Navigate to="/" replace />;
+  }
+
   const today = new Date().toISOString().split('T')[0];
   const firstOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
     .toISOString().split('T')[0];
@@ -22,17 +31,30 @@ function Laporan() {
   async function loadRiwayat() {
     setLoading(true);
     setMessage(null);
+    
     try {
       const res = await laporanAPI.getRiwayat(startDate, endDate);
-      const data = res.data.data || [];
+      const data = res.data || [];
       setRiwayat(data);
+
+      if (data.length === 0) {
+        setMessage({ 
+          type: 'error', 
+          text: 'Tidak ada data parkir dalam rentang tanggal ini. Coba ubah filter tanggal.' 
+        });
+      }
 
       const motor = data.filter((d) => d.jenis_kendaraan === 'motor').length;
       const mobil = data.filter((d) => d.jenis_kendaraan === 'mobil').length;
-      const pendapatan = data.reduce((sum, d) => sum + (parseInt(d.jumlah_bayar) || 0), 0);
+      const pendapatan = data.reduce((sum, d) => sum + (parseInt(d.total_biaya) || 0), 0);
+      
       setStats({ total: data.length, pendapatan, motor, mobil });
+      
     } catch (err) {
-      setMessage({ type: 'error', text: err.message });
+      setMessage({ 
+        type: 'error', 
+        text: `Gagal memuat data: ${err.message || 'Unknown error'}. Cek console untuk detail.` 
+      });
     } finally {
       setLoading(false);
     }
@@ -50,18 +72,18 @@ function Laporan() {
 
   const columns = [
     { key: 'id_parkir', label: 'ID Parkir', render: (v) => `#${v}` },
-    { key: 'plat_nomor', label: 'Plat Nomor', render: (v) => <strong>{v}</strong> },
+    { key: 'plat_nomor', label: 'Plat Nomor', render: (v) => <strong>{v || '-'}</strong> },
     {
       key: 'jenis_kendaraan',
       label: 'Jenis',
-      render: (v) => <span style={{ textTransform: 'capitalize' }}>{v}</span>,
+      render: (v) => <span style={{ textTransform: 'capitalize' }}>{v || '-'}</span>,
     },
     { key: 'waktu_masuk', label: 'Masuk', render: (v) => formatDate(v) },
     { key: 'waktu_keluar', label: 'Keluar', render: (v) => formatDate(v) },
     { key: 'durasi_jam', label: 'Durasi', render: (v) => v ? `${v} jam` : '-' },
     { key: 'total_biaya', label: 'Total Biaya', render: (v) => formatRupiah(v) },
     { key: 'jumlah_bayar', label: 'Dibayar', render: (v) => formatRupiah(v) },
-    { key: 'metode_pembayaran', label: 'Metode', render: (v) => v || '-' },
+    { key: 'metode_pembayaran', label: 'Metode', render: (v) => <span style={{ textTransform: 'capitalize' }}>{v || '-'}</span> },
   ];
 
   return (
@@ -73,9 +95,8 @@ function Laporan() {
         </div>
       </div>
 
-      {/* Filter */}
       <div className={styles.filter__card}>
-        <h3 className={styles.filter__title}>🔍 Filter Tanggal</h3>
+        <h3 className={styles.filter__title}>Filter Tanggal</h3>
         <div className={styles.filter__row}>
           <div className={styles.form__group}>
             <label className={styles.label}>Tanggal Mulai</label>
@@ -84,6 +105,7 @@ function Laporan() {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
+              disabled={loading}
             />
           </div>
           <div className={styles.form__group}>
@@ -93,11 +115,16 @@ function Laporan() {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
+              disabled={loading}
             />
           </div>
           <div className={styles.filter__btn__wrap}>
-            <button className={styles.btn__primary} onClick={loadRiwayat} disabled={loading}>
-              🔍 Cari
+            <button 
+              className={styles.btn__primary} 
+              onClick={loadRiwayat} 
+              disabled={loading}
+            >
+              {loading ? 'Memuat...' : 'Tampilkan'}
             </button>
           </div>
         </div>
@@ -110,7 +137,6 @@ function Laporan() {
         </div>
       )}
 
-      {/* Summary Stats */}
       {!loading && riwayat.length > 0 && (
         <div className={styles.stats__row}>
           <div className={styles.stat__mini}>
@@ -125,7 +151,7 @@ function Laporan() {
             <span className={styles.stat__num}>{stats.mobil}</span>
             <span className={styles.stat__lbl}>Mobil</span>
           </div>
-          <div className={styles.stat__mini} style={{ '--c': '#f72585' }}>
+          <div className={styles.stat__mini}>
             <span className={styles.stat__num} style={{ color: '#f72585' }}>
               Rp {stats.pendapatan.toLocaleString('id-ID')}
             </span>
@@ -134,48 +160,16 @@ function Laporan() {
         </div>
       )}
 
-      {message && (
-        <div className={`${styles.alert} ${message.type === 'success' ? styles.alert__success : styles.alert__error}`}>
-          {message.text}
-          <button className={styles.alert__close} onClick={() => setMessage(null)}>✕</button>
+      {loading ? (
+        <div className={styles.loading}>Memuat data...</div>
+      ) : (
+        <div className={styles.card}>
+          <div className={styles.card__header}>
+            <h3 className={styles.card__title}>Riwayat Parkir ({riwayat.length} data)</h3>
+          </div>
+          <Table columns={columns} data={riwayat} emptyText="Tidak ada data pada rentang tanggal ini" />
         </div>
       )}
-
-      {/* Summary Stats */}
-      {!loading && riwayat.length > 0 && (
-        <div className={styles.stats__row}>
-          <div className={styles.stat__mini}>
-            <span className={styles.stat__num}>{stats.total}</span>
-            <span className={styles.stat__lbl}>Total Transaksi</span>
-          </div>
-          <div className={styles.stat__mini}>
-            <span className={styles.stat__num}>{stats.motor}</span>
-            <span className={styles.stat__lbl}>Motor</span>
-          </div>
-          <div className={styles.stat__mini}>
-            <span className={styles.stat__num}>{stats.mobil}</span>
-            <span className={styles.stat__lbl}>Mobil</span>
-          </div>
-          <div className={styles.stat__mini} style={{ '--c': '#f72585' }}>
-            <span className={styles.stat__num} style={{ color: '#f72585' }}>
-              Rp {stats.pendapatan.toLocaleString('id-ID')}
-            </span>
-            <span className={styles.stat__lbl}>Total Pendapatan</span>
-          </div>
-        </div>
-      )}
-
-    {}
-      <div className={styles.card}>
-        <div className={styles.card__header}>
-          <h3 className={styles.card__title}>Riwayat Parkir ({riwayat.length})</h3>
-        </div>
-        <Table 
-          columns={columns} 
-          data={riwayat} 
-          emptyText={loading ? "⏳ Belum ada laporan" : "Belum ada data laporan."} 
-        />
-      </div>
     </div>
   );
 }
