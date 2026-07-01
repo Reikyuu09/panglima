@@ -10,9 +10,18 @@ export default function Header() {
         </Link>
         
         <nav className="header-nav">
-          <Link to="/tentang" className="nav-link">Tentang Kami</Link>
-          <Link to="/harga" className="nav-link">Harga</Link>
-          <Link to="/syarat" className="nav-link">Syarat & Ketentuan</Link>
+          <a href="#tentang-kami" className="nav-link">
+            Tentang Kami
+          </a>
+          <a href="#fitur" className="nav-link">
+            Fitur
+          </a>
+          <a href="#harga" className="nav-link">
+            Tarif
+          </a>
+          <a href="#faq" className="nav-link">
+            FAQ
+          </a>
         </nav>
 
         <div className="header-buttons">

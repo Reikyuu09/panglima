@@ -47,15 +47,15 @@ function Petugas() {
 
       console.log('Response status:', response.status); // Debug response
 
-      if (response.status === 401) {
-        setError('Sesi expired. Silakan login ulang.');
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setTimeout(() => {
-          window.location.href = '/login';
-        }, 2000);
-        return;
-      }
+      // if (response.status === 401) {
+      //   setError('Sesi expired. Silakan login ulang.');
+      //   localStorage.removeItem('token');
+      //   localStorage.removeItem('user');
+      //   setTimeout(() => {
+      //     window.location.href = '/login';
+      //   }, 2000);
+      //   return;
+      // }
 
       if (!response.ok) {
         const errorData = await response.json();

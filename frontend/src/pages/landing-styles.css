@@ -607,3 +607,62 @@
     font-size: 3rem;
   }
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+#tentang,
+#fitur,
+#tarif,
+#syarat {
+    scroll-margin-top: 90px;
+}
+
+/* ============================================
+   KUSTOMISASI LAYANAN INFORMASI (STYLE UI)
+   ============================================ */
+
+/* Mengubah grid agar terbagi menjadi 2 kolom (Kiri & Kanan lebar) */
+.parkink-custom-grid {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .parkink-custom-grid {
+    grid-template-columns: 1fr 2fr; /* Kolom kanan lebih lebar untuk info */
+    gap: 4rem;
+  }
+}
+
+/* Memastikan teks informasi tidak berubah menjadi link (berwarna abu lembut) */
+.footer-info-column ul li {
+  color: rgba(199, 210, 254, 0.7);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  margin-bottom: 0.4rem;
+}
+
+/* Jarak pemisah untuk kontak */
+.footer-contact-gap {
+  margin-top: 1.5rem !important;
+}
+
+/* Pengaturan baris sosmed di bawah teks informasi */
+.footer-social-ui {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.footer-social-ui a {
+  color: rgba(199, 210, 254, 0.6);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.2s;
+}
+
+.footer-social-ui a:hover {
+  color: #818cf8;
+}

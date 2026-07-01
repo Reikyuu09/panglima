@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { parkirAPI, pembayaranAPI, kendaraanAPI } from '../../utils/api';
 import { useAuth } from '../../utils/AuthContext';
+import Table from '../../components/Table/Table';
 import styles from './Dashboard.module.css';
 
 function StatCard({ label, value, icon, color }) {
@@ -75,6 +76,48 @@ function Dashboard() {
     return new Date(dateStr).toLocaleString('id-ID');
   }
 
+  const columns = [
+  {
+    key: 'id_parkir',
+    label: 'ID Parkir',
+    render: (v) => `#${v}`,
+  },
+  {
+    key: 'plat_nomor',
+    label: 'Plat Nomor',
+    render: (v) => <strong>{v}</strong>,
+  },
+  {
+    key: 'jenis_kendaraan',
+    label: 'Jenis',
+    render: (v) => (
+      <span style={{ textTransform: 'capitalize' }}>
+        {v}
+      </span>
+    ),
+  },
+  {
+    key: 'waktu_masuk',
+    label: 'Waktu Masuk',
+    render: (v) => formatDate(v),
+  },
+  {
+    key: 'status',
+    label: 'Status',
+    render: (v) => (
+      <span
+        className={`${styles.badge} ${
+          v === 'parkir'
+            ? styles.badge__aktif
+            : styles.badge__selesai
+        }`}
+      >
+        {v === 'parkir' ? 'Aktif' : 'Selesai'}
+      </span>
+    ),
+  },
+];
+
   if (loading) return <div className={styles.loading}>Memuat data...</div>;
 
   return (
@@ -82,7 +125,7 @@ function Dashboard() {
       <div className={styles.header}>
         <div>
           <h2 className={styles.title}>Dashboard</h2>
-          <p className={styles.welcome}>Selamat datang, <strong>{user?.name}</strong> 👋</p>
+          <p className={styles.welcome}>Selamat datang, <strong>{user?.name}</strong></p>
         </div>
         <span className={styles.date}>
           {new Date().toLocaleDateString('id-ID', {
@@ -102,41 +145,15 @@ function Dashboard() {
       </div>
 
       <div className={styles.section}>
-        <h3 className={styles.section__title}>Aktivitas Parkir Terbaru</h3>
-        <div className={styles.table__wrapper}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>ID Parkir</th>
-                <th>Plat Nomor</th>
-                <th>Jenis</th>
-                <th>Waktu Masuk</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentParkir.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className={styles.empty}>Belum ada data parkir</td>
-                </tr>
-              ) : (
-                recentParkir.map((p) => (
-                  <tr key={p.id_parkir}>
-                    <td>#{p.id_parkir}</td>
-                    <td><strong>{p.plat_nomor}</strong></td>
-                    <td style={{ textTransform: 'capitalize' }}>{p.jenis_kendaraan}</td>
-                    <td>{formatDate(p.waktu_masuk)}</td>
-                    <td>
-                      <span className={`${styles.badge} ${p.status === 'parkir' ? styles.badge__aktif : styles.badge__selesai}`}>
-                        {p.status === 'parkir' ? 'Aktif' : 'Selesai'}
-                      </span>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+          <h3 className={styles.section__title}>
+           Aktivitas Parkir Terbaru
+          </h3>
+
+          <Table
+            columns={columns}
+            data={recentParkir}
+            emptyText="Belum ada data parkir"
+          />
       </div>
     </div>
   );
