@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { parkirAPI } from '../../utils/api';
+import { parkirAPI, pembayaranAPI } from '../../utils/api'; 
 import Table from '../../components/Table/Table';
 import Modal from '../../components/Modal/Modal';
 import styles from './Parkir.module.css';
@@ -10,7 +10,13 @@ function Parkir() {
   const [showCheckIn, setShowCheckIn] = useState(false);
   const [showKeluar, setShowKeluar] = useState(false);
   const [checkInForm, setCheckInForm] = useState({ plat_nomor: '', jenis_kendaraan: 'motor' });
-  const [keluarForm, setKeluarForm] = useState({ id_parkir: '' });
+  
+  const [keluarForm, setKeluarForm] = useState({ 
+    id_parkir: '', 
+    metode_pembayaran: 'tunai',
+    jumlah_bayar: ''
+  });
+  
   const [message, setMessage] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -50,16 +56,23 @@ function Parkir() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const res = await parkirAPI.keluar({ id_parkir: parseInt(keluarForm.id_parkir) });
-      setMessage({
-        type: 'success',
-        text: `Kendaraan keluar! Durasi: ${res.data.durasi_jam} jam | Total: Rp ${res.data.total_biaya?.toLocaleString('id-ID')}`,
+      // Panggil API pembayaran (yang sudah handle keluar + bayar)
+      const res = await pembayaranAPI.proses({
+        id_parkir: parseInt(keluarForm.id_parkir),
+        metode_pembayaran: keluarForm.metode_pembayaran,
+        jumlah_bayar: parseInt(keluarForm.jumlah_bayar)
       });
+      
+      setMessage({ 
+        type: 'success', 
+        text: `Pembayaran berhasil! Total: Rp ${res.data.total_biaya?.toLocaleString('id-ID')} | Kembalian: Rp ${res.data.kembalian?.toLocaleString('id-ID')}` 
+      });
+      
       setShowKeluar(false);
-      setKeluarForm({ id_parkir: '' });
+      setKeluarForm({ id_parkir: '', metode_pembayaran: 'tunai', jumlah_bayar: '' });
       loadParkir();
     } catch (err) {
-      setMessage({ type: 'error', text: err.message });
+      setMessage({ type: 'error', text: err.message || err.data?.message });
     } finally {
       setSubmitting(false);
     }
@@ -98,14 +111,14 @@ function Parkir() {
       <div className={styles.header}>
         <div>
           <h2 className={styles.title}>Manajemen Parkir</h2>
-          <p className={styles.subtitle}>Kelola check-in dan check-out kendaraan</p>
+          <p className={styles.subtitle}>Kelola check-in, check-out, dan pembayaran kendaraan</p>
         </div>
         <div className={styles.header__actions}>
           <button className={styles.btn__primary} onClick={() => setShowCheckIn(true)}>
             Check-In
           </button>
           <button className={styles.btn__warning} onClick={() => setShowKeluar(true)}>
-            Kendaraan Keluar
+            Keluar & Bayar
           </button>
         </div>
       </div>
@@ -129,9 +142,8 @@ function Parkir() {
         </div>
       )}
 
-      {/* Modal Check-In */}
       {showCheckIn && (
-        <Modal title="🅿️ Check-In Kendaraan" onClose={() => setShowCheckIn(false)}>
+        <Modal title="🅿Check-In Kendaraan" onClose={() => setShowCheckIn(false)}>
           <form onSubmit={handleCheckIn} className={styles.form}>
             <div className={styles.form__group}>
               <label className={styles.label}>Plat Nomor</label>
@@ -169,9 +181,8 @@ function Parkir() {
         </Modal>
       )}
 
-      {/* Modal Keluar */}
       {showKeluar && (
-        <Modal title="Kendaraan Keluar" onClose={() => setShowKeluar(false)}>
+        <Modal title="Kendaraan Keluar & Pembayaran" onClose={() => setShowKeluar(false)}>
           <form onSubmit={handleKeluar} className={styles.form}>
             <div className={styles.form__group}>
               <label className={styles.label}>ID Parkir</label>
@@ -179,19 +190,47 @@ function Parkir() {
                 className={styles.input}
                 type="number"
                 value={keluarForm.id_parkir}
-                onChange={(e) => setKeluarForm({ id_parkir: e.target.value })}
+                onChange={(e) => setKeluarForm({ ...keluarForm, id_parkir: e.target.value })}
                 placeholder="Masukkan ID Parkir"
                 required
                 autoFocus
               />
               <small className={styles.hint}>Lihat ID Parkir pada tabel di bawah</small>
             </div>
+
+            <div className={styles.form__group}>
+              <label className={styles.label}>Metode Pembayaran</label>
+              <select
+                className={styles.input}
+                value={keluarForm.metode_pembayaran}
+                onChange={(e) => setKeluarForm({ ...keluarForm, metode_pembayaran: e.target.value })}
+                required
+              >
+                <option value="tunai">Tunai</option>
+                <option value="qris">QRIS</option>
+                <option value="e-wallet">E-Wallet</option>
+              </select>
+            </div>
+
+            <div className={styles.form__group}>
+              <label className={styles.label}>Jumlah Bayar (Rp)</label>
+              <input
+                className={styles.input}
+                type="number"
+                value={keluarForm.jumlah_bayar}
+                onChange={(e) => setKeluarForm({ ...keluarForm, jumlah_bayar: e.target.value })}
+                placeholder="Contoh: 10000"
+                required
+              />
+              <small className={styles.hint}>Lihat total biaya pada tabel. Sistem akan hitung kembalian otomatis</small>
+            </div>
+
             <div className={styles.form__actions}>
               <button type="button" className={styles.btn__secondary} onClick={() => setShowKeluar(false)}>
                 Batal
               </button>
               <button type="submit" className={styles.btn__warning} disabled={submitting}>
-                {submitting ? 'Memproses...' : 'Konfirmasi Keluar'}
+                {submitting ? 'Memproses...' : 'Konfirmasi & Bayar'}
               </button>
             </div>
           </form>
