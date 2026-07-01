@@ -2,11 +2,10 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './utils/AuthContext';
 import { useState } from 'react';
 import Sidebar from './components/Sidebar/Sidebar';
-import Footer from './components/Footer/Footer';
 import LandingPage from './pages/LandingPage';
 import About from './pages/About/About';
 import Pricing from './pages/Harga/Pricing';
-import Terms from './pages/SyaratKetentuan/Terms';
+import Faq from "./pages/FAQ/Faq";
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import Dashboard from './pages/Dashboard/Dashboard';
@@ -35,7 +34,6 @@ function Layout({ children }) {
       <main className="main-content">
         <button className="menu-toggle" onClick={toggleSidebar}>☰</button>
         <div className="content-wrapper">{children}</div>
-        <Footer />
       </main>
     </div>
   );
@@ -49,7 +47,7 @@ function AppRoutes() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/tentang" element={<About />} />
       <Route path="/harga" element={<Pricing />} />
-      <Route path="/syarat" element={<Terms />} />
+      <Route path="/faq" element={<Faq />} />
       <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
       <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <Register />} />
       

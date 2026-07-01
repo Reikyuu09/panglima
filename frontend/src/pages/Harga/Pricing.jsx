@@ -1,122 +1,85 @@
-import Header from '../../components/Landing/header'
-import Footer from '../../components/Landing/footer'
-import './pricing.css'
+import './pricing.css';
+import { FaMotorcycle, FaCarSide, FaTruck } from "react-icons/fa";
 
 export default function Pricing() {
+  const tarif = [
+    {
+      icon: <FaMotorcycle />,
+      title: "Roda 2",
+      first: "Rp 3.000",
+      next: "Rp 2.000",
+      max: "Rp 20.000",
+    },
+    {
+      icon: <FaCarSide />,
+      title: "Roda 4",
+      first: "Rp 5.000",
+      next: "Rp 3.000",
+      max: "Rp 35.000",
+    },
+    {
+      icon:<FaTruck />,
+      title: "Kendaraan Besar",
+      first: "Rp 8.000",
+      next: "Rp 5.000",
+      max: "Rp 50.000",
+    },
+  ];
+
   return (
-    <div className="pricing-page">
-      <Header />
-      <main className="pricing-main">
-        <section className="pricing-hero">
-          <div className="container">
-            <h1>Paket Harga</h1>
-            <p className="subtitle">
-              Pilih paket yang sesuai dengan kebutuhan bisnis Anda
-            </p>
-          </div>
-        </section>
+    <section id="harga" className="pricing-section">
+      <div className="pricing-container">
 
-        <section className="pricing-plans">
-          <div className="container">
-            <div className="plans-grid">
-              {/* Paket Basic */}
-              <div className="plan-card">
-                <div className="plan-header">
-                  <h3>Basic</h3>
-                  <div className="plan-price">
-                    <span className="currency">Rp</span>
-                    <span className="amount">199.000</span>
-                    <span className="period">/bulan</span>
-                  </div>
-                  <p className="plan-desc">Cocok untuk parkir skala kecil</p>
-                </div>
-                <ul className="plan-features">
-                  <li>✓ Hingga 50 kendaraan/hari</li>
-                  <li>✓ 1 pengguna</li>
-                  <li>✓ Laporan dasar</li>
-                  <li>✓ Pembayaran tunai</li>
-                  <li>✓ Support email</li>
-                  <li className="disabled">✗ Pembayaran digital</li>
-                  <li className="disabled">✗ API access</li>
-                </ul>
-                <button className="btn btn-secondary">Pilih Paket</button>
+        <div className="pricing-header">
+          <span className="pricing-badge">Tarif Parkir</span>
+
+          <h2>Tarif Kendaraan</h2>
+
+          <p>
+            Tarif parkir dihitung berdasarkan lama kendaraan berada
+            di area parkir.
+          </p>
+        </div>
+
+        <div className="tarif-grid">
+          {tarif.map((item, index) => (
+            <div className="tarif-card" key={index}>
+
+              <div className="tarif-icon">
+                {item.icon}
               </div>
 
-              {/* Paket Professional */}
-              <div className="plan-card featured">
-                <div className="plan-badge">Paling Populer</div>
-                <div className="plan-header">
-                  <h3>Professional</h3>
-                  <div className="plan-price">
-                    <span className="currency">Rp</span>
-                    <span className="amount">499.000</span>
-                    <span className="period">/bulan</span>
-                  </div>
-                  <p className="plan-desc">Untuk bisnis parkir menengah</p>
-                </div>
-                <ul className="plan-features">
-                  <li>✓ Hingga 200 kendaraan/hari</li>
-                  <li>✓ 5 pengguna</li>
-                  <li>✓ Laporan lengkap</li>
-                  <li>✓ Pembayaran tunai & digital</li>
-                  <li>✓ Priority support</li>
-                  <li>✓ Multi lokasi</li>
-                  <li className="disabled">✗ API access</li>
-                </ul>
-                <button className="btn btn-primary">Pilih Paket</button>
+              <h3>{item.title}</h3>
+
+              <div className="tarif-item">
+                <span>Jam Pertama</span>
+                <strong>{item.first}</strong>
               </div>
 
-              {/* Paket Enterprise */}
-              <div className="plan-card">
-                <div className="plan-header">
-                  <h3>Enterprise</h3>
-                  <div className="plan-price">
-                    <span className="currency">Rp</span>
-                    <span className="amount">999.000</span>
-                    <span className="period">/bulan</span>
-                  </div>
-                  <p className="plan-desc">Solusi lengkap untuk skala besar</p>
-                </div>
-                <ul className="plan-features">
-                  <li>✓ Unlimited kendaraan</li>
-                  <li>✓ Unlimited pengguna</li>
-                  <li>✓ Laporan & analytics</li>
-                  <li>✓ Semua metode pembayaran</li>
-                  <li>✓ 24/7 dedicated support</li>
-                  <li>✓ Multi lokasi</li>
-                  <li>✓ API access</li>
-                </ul>
-                <button className="btn btn-secondary">Hubungi Kami</button>
+              <div className="tarif-item">
+                <span>Per Jam Berikutnya</span>
+                <strong>{item.next}</strong>
               </div>
+
+              <div className="tarif-item">
+                <span>Maksimal / Hari</span>
+                <strong>{item.max}</strong>
+              </div>
+
             </div>
-          </div>
-        </section>
+          ))}
+        </div>
 
-        <section className="pricing-faq">
-          <div className="container">
-            <h2>Pertanyaan Umum</h2>
-            <div className="faq-list">
-              <div className="faq-item">
-                <h4>Apakah ada masa percobaan gratis?</h4>
-                <p>Ya, kami menyediakan free trial 14 hari untuk semua paket tanpa perlu kartu kredit.</p>
-              </div>
-              <div className="faq-item">
-                <h4>Bisakah upgrade atau downgrade paket?</h4>
-                <p>Tentu, Anda bisa mengubah paket kapan saja. Perubahan akan berlaku pada periode billing berikutnya.</p>
-              </div>
-              <div className="faq-item">
-                <h4>Metode pembayaran apa saja yang tersedia?</h4>
-                <p>Kami menerima transfer bank, kartu kredit/debit, QRIS, dan e-wallet (GoPay, OVO, DANA, dll).</p>
-              </div>
-              <div className="faq-item">
-                <h4>Apakah ada biaya setup?</h4>
-                <p>Tidak ada biaya setup untuk semua paket. Anda hanya membayar biaya langganan bulanan.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-      <Footer />
-    </div>
-  )
+        <div className="pricing-note">
+          <strong>Catatan</strong>
+
+          <p>
+            Tarif di atas merupakan simulasi tarif parkir.
+            Pembayaran dapat dilakukan secara tunai maupun non-tunai.
+          </p>
+        </div>
+
+      </div>
+    </section>
+  );
 }

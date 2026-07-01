@@ -7,21 +7,31 @@ function Table({ columns, data, emptyText = 'Tidak ada data' }) {
         <thead>
           <tr>
             {columns.map((col) => (
-              <th key={col.key} className={styles.th}>{col.label}</th>
+              <th key={col.key} className={styles.th}>
+                {col.label}
+              </th>
             ))}
           </tr>
         </thead>
+
         <tbody>
           {data.length === 0 ? (
             <tr>
-              <td colSpan={columns.length} className={styles.empty}>{emptyText}</td>
+              <td colSpan={columns.length} className={styles.empty}>
+                {emptyText}
+              </td>
             </tr>
           ) : (
             data.map((row, idx) => (
-              <tr key={idx} className={styles.tr}>
+              <tr
+                key={row.id || row.Id_kendaraan || row.id_parkir || idx}
+                className={styles.tr}
+              >
                 {columns.map((col) => (
                   <td key={col.key} className={styles.td}>
-                    {col.render ? col.render(row[col.key], row) : (row[col.key] ?? '-')}
+                    {col.render
+                      ? col.render(row[col.key], row)
+                      : row[col.key] ?? '-'}
                   </td>
                 ))}
               </tr>

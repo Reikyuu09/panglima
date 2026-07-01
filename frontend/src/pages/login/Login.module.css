@@ -72,17 +72,26 @@
 }
 
 .input {
-  border: 1.5px solid #dee2e6;
+  width: 100%;
+  background: #fff;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827;
+
+  border: 1.5px solid #d1d5db;
   border-radius: 8px;
-  padding: 0.65rem 0.9rem;
+  padding: 0.75rem 0.9rem;
   font-size: 0.95rem;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  
+}
+
+.input::placeholder {
+  color: #9ca3af;
+  opacity: 1;
 }
 
 .input:focus {
-  border-color: #4361ee;
-  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+  color: #111827;
 }
 
 .btn {
