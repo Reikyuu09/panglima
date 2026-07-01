@@ -20,7 +20,7 @@ export default function Footer() {
             <ul>
               <li>Sentra Informasi & Pelayanan Publik ParkInk (SIPP ParkInk)</li>
               <li>Gedung Pusat Pelayanan Pengguna Terpadu (PPPT), Lt. Dasar</li>
-              <li>Kampus UI Depok 16416</li>
+              <li>Kampus STT Terpadu Nurul Fikri</li>
               <li className="footer-contact-gap">Telp. : 021 1500 002</li>
               <li>WhatsApp : 0815 1500 0002</li>
               <li>E-mail : sipp@parkink.id</li>
