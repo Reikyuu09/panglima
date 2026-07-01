@@ -1,7 +1,7 @@
 const userService = require("../services/userService");
 const UserModel = require("../models/userModels");
 const db = require("../config/database");
-const bcrypt = require('bcryptjs');
+// ❌ HAPUS: const bcrypt = require('bcryptjs');
 const path = require('path');
 const fs = require('fs');
 
@@ -16,15 +16,53 @@ async function login(req, res) {
             });
         }
 
-        const result = await userService.login(db, username, password);
-
-        if (!result.success) {
-            return res.status(401).json(result);
+        // Cari user by username
+        const user = await UserModel.findByUsername(username);
+        
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "Username atau password salah"
+            });
         }
 
-        return res.json(result);
+        // ✅ Bandingkan password PLAIN TEXT (tanpa bcrypt)
+        if (password !== user.password) {
+            return res.status(401).json({
+                success: false,
+                message: "Username atau password salah"
+            });
+        }
+
+        // Generate JWT token
+        const jwt = require('jsonwebtoken');
+        const token = jwt.sign(
+            { 
+                id_user: user.id_user,
+                username: user.username,
+                role: user.role 
+            },
+            process.env.JWT_SECRET || 'parkink-secret',
+            { expiresIn: '7d' }
+        );
+
+        return res.json({
+            success: true,
+            message: "Login berhasil",
+            data: {
+                user: {
+                    id_user: user.id_user,
+                    username: user.username,
+                    name: user.name,
+                    role: user.role,
+                    foto: user.foto
+                },
+                token: token
+            }
+        });
 
     } catch (error) {
+        console.error('Login error:', error);
         return res.status(500).json({
             success: false,
             message: "Server error",
@@ -44,7 +82,13 @@ async function signIn(req, res) {
             });
         }
 
-        const result = await userService.createUser(db, { username, password, name, role });
+        // ✅ Simpan password PLAIN TEXT (tanpa hash)
+        const result = await userService.createUser(db, { 
+            username, 
+            password,  // Langsung simpan, jangan di-hash
+            name, 
+            role 
+        });
         
         return res.status(201).json({
             success: true,
@@ -79,7 +123,6 @@ async function getAllUsers(req, res) {
     }
 }
 
-// ✅ NEW: Create petugas dengan upload foto
 async function createPetugas(req, res) {
     try {
         if (!req.user || req.user.role !== 'admin') {
@@ -106,12 +149,12 @@ async function createPetugas(req, res) {
             });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // ✅ Simpan password PLAIN TEXT
         const foto = req.file ? req.file.filename : null;
 
         const [result] = await db.query(
             'INSERT INTO tabeluser (username, password, name, role, foto) VALUES (?, ?, ?, ?, ?)',
-            [username, hashedPassword, name, role || 'petugas', foto]
+            [username, password, name, role || 'petugas', foto]  // Langsung simpan password
         );
 
         const newUser = await UserModel.findById(result.insertId);
@@ -139,7 +182,6 @@ async function createPetugas(req, res) {
     }
 }
 
-// ✅ NEW: Update petugas dengan upload foto
 async function updatePetugas(req, res) {
     try {
         if (!req.user || req.user.role !== 'admin') {
@@ -174,12 +216,12 @@ async function updatePetugas(req, res) {
             username: username || existingUser.username,
             name: name || existingUser.name,
             role: role || existingUser.role,
-            password: existingUser.password,
-            foto: existingUser.foto
+            password: existingUser.password  // Pakai password lama
         };
 
+        // ✅ Jika ada password baru, simpan PLAIN TEXT (tanpa hash)
         if (password && password.trim() !== '') {
-            updateData.password = await bcrypt.hash(password, 10);
+            updateData.password = password;  // Langsung simpan
         }
 
         if (req.file) {
@@ -190,6 +232,8 @@ async function updatePetugas(req, res) {
                 }
             }
             updateData.foto = req.file.filename;
+        } else {
+            updateData.foto = existingUser.foto;
         }
 
         await UserModel.update(id, updateData);
@@ -284,7 +328,6 @@ async function deleteUser(req, res) {
     }
 }
 
-// ✅ PENTING: Pastikan semua function di-export
 module.exports = {
     login,
     signIn,
