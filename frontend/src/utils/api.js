@@ -37,6 +37,15 @@ async function request(path, options = {}) {
     const data = await res.json();
     
     if (!res.ok) {
+      if (res.status === 401) {
+        console.log('Token tidak valid/expired, auto-logout...');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 100);
+      }
       throw {
         status: res.status,
         message: data.message || data.pesan || 'Terjadi kesalahan',

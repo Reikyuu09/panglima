@@ -1,39 +1,33 @@
 const db = require('../config/database');
 
-const getRiwayatParkir = (startDate, endDate) => {
-    return new Promise((resolve, reject) => {
-        console.log('[MODEL] Start simple query...');
-        
-        // QUERY PALING SIMPLE - TANPA JOIN
-        const sql = `
-            SELECT 
-                id_parkir,
-                waktu_masuk,
-                waktu_keluar,
-                durasi_jam,
-                total_biaya,
-                status
-            FROM tableparkir
-            WHERE status = 'selesai'
-            AND DATE(waktu_keluar) BETWEEN ? AND ?
-            ORDER BY waktu_keluar DESC
-            LIMIT 20
-        `;
+const getRiwayatParkir = async (startDate, endDate) => {
+    let sql = `
+        SELECT 
+            p.id_parkir,
+            k.plat_nomor,
+            k.jenis_kendaraan,
+            p.waktu_masuk,
+            p.waktu_keluar,
+            p.durasi_jam,
+            p.total_biaya,
+            p.status,
+            py.jumlah_bayar,
+            py.metode_pembayaran
+        FROM tableparkir p
+        LEFT JOIN tablekendaraan k ON p.id_kendaraan = k.Id_kendaraan
+        LEFT JOIN tablepembayaran py ON p.id_parkir = py.id_parkir
+    `;
+    const queryParams = [];
 
-        console.log('[MODEL] SQL:', sql);
-        console.log('[MODEL] Params:', [startDate, endDate]);
+    if (startDate && endDate) {
+        sql += ' WHERE DATE(p.waktu_masuk) BETWEEN ? AND ?';
+        queryParams.push(startDate, endDate);
+    }
 
-        db.query(sql, [startDate, endDate], (err, results) => {
-            if (err) {
-                console.error('[MODEL] Error:', err.message);
-                return reject(err);
-            }
-            
-            console.log('[MODEL] Success! Rows:', results.length);
-            console.log('[MODEL] Sample:', results.slice(0, 2));
-            resolve(results);
-        });
-    });
+    sql += ' ORDER BY p.id_parkir DESC';
+
+    const [results] = await db.query(sql, queryParams);
+    return results;
 };
 
 module.exports = {

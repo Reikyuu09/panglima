@@ -1,7 +1,10 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');  // ✅ Pastikan import path
+const path = require('path');
+const crypto = require('crypto'); 
 require('dotenv').config();
+
+process.env.JWT_SECRET = crypto.randomBytes(64).toString('hex');
 
 const app = express();
 const authenticate = require('./middleware/authenticate');
