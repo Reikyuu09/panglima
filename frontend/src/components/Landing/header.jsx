@@ -26,7 +26,7 @@ export default function Header() {
 
         <div className="header-buttons">
           <Link to="/login" className="btn btn-secondary btn-sm">
-            Sign In
+            Login
           </Link>
           <Link to="/register" className="btn btn-primary btn-sm">
             Register
