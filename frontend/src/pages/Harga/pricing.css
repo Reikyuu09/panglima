@@ -1,197 +1,170 @@
-.pricing-page {
-  min-height: 100vh;
-  background: #0a0e1a;
-  color: #e5e7eb;
+/* ==========================================
+   PRICING SECTION
+========================================== */
+
+.pricing-section{
+    padding:100px 20px;
+    background:#0a0e1a;
 }
 
-.pricing-main {
-  padding-top: 80px;
+.pricing-container{
+    width:100%;
+    max-width:1400px;
+    margin:auto;
+}
+/* ==========================================
+   HEADER
+========================================== */
+
+.pricing-header{
+    text-align:center;
+    margin-bottom:70px;
 }
 
-.pricing-hero {
-  padding: 4rem 1.5rem;
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.1));
-  text-align: center;
-  border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+.pricing-badge{
+    display:inline-block;
+    padding:8px 18px;
+    border-radius:999px;
+    background:rgba(99,102,241,.15);
+    color:#818cf8;
+    font-size:.9rem;
+    font-weight:600;
+    margin-bottom:18px;
 }
 
-.pricing-hero h1 {
-  font-size: 3rem;
-  font-weight: 700;
-  color: white;
-  margin-bottom: 1rem;
+.pricing-header h2{
+    font-size:42px;
+    color:#fff;
+    margin-bottom:15px;
 }
 
-.pricing-hero .subtitle {
-  font-size: 1.25rem;
-  color: rgba(199, 210, 254, 0.8);
-  max-width: 600px;
-  margin: 0 auto;
+.pricing-header p{
+    color:#94a3b8;
+    max-width:650px;
+    margin:auto;
+    line-height:1.7;
 }
 
-.pricing-plans {
-  padding: 4rem 1.5rem;
+/* ==========================================
+   CARD GRID
+========================================== */
+
+.tarif-grid{
+    display:flex;
+    justify-content:center;
+    gap:30px;
+    flex-wrap:wrap;
 }
 
-.plans-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  max-width: 72rem;
-  margin: 0 auto;
+/* ==========================================
+   CARD
+========================================== */
+
+.tarif-card{
+    width:320px;
+    background:#111827;
+    border:1px solid rgba(99,102,241,.2);
+    border-radius:20px;
+    padding:35px 30px;
+    transition:.35s;
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
 }
 
-.plan-card {
-  background: rgba(17, 24, 39, 0.6);
-  border: 1px solid rgba(75, 85, 99, 0.3);
-  border-radius: 1.5rem;
-  padding: 2rem;
-  position: relative;
-  transition: all 0.3s ease;
+.tarif-card:hover{
+    transform:translateY(-10px);
+    border-color:#6366f1;
+    box-shadow:0 20px 45px rgba(99,102,241,.25);
 }
 
-.plan-card:hover {
-  border-color: rgba(99, 102, 241, 0.5);
-  transform: translateY(-8px);
-  box-shadow: 0 20px 60px rgba(99, 102, 241, 0.2);
+/* ==========================================
+   ICON
+========================================== */
+
+.tarif-icon{
+    width:72px;
+    height:72px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:auto;
+    margin-bottom:20px;
+    border-radius:18px;
+
+    background:rgba(99,102,241,.12);
+    color:#6366f1;
+
+    font-size:34px;
 }
 
-.plan-card.featured {
-  border: 2px solid rgba(99, 102, 241, 0.6);
-  background: rgba(79, 70, 229, 0.1);
+.tarif-card h3{
+    color:#fff;
+    text-align:center;
+    margin-bottom:25px;
+    font-size:1.4rem;
 }
 
-.plan-badge {
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
-  color: white;
-  padding: 0.5rem 1.5rem;
-  border-radius: 2rem;
-  font-size: 0.875rem;
-  font-weight: 600;
+/* ==========================================
+   ITEM
+========================================== */
+
+.tarif-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 0;
+    border-bottom:1px solid rgba(255,255,255,.08);
 }
 
-.plan-header {
-  text-align: center;
-  margin-bottom: 2rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+.tarif-item:last-child{
+    border-bottom:none;
 }
 
-.plan-header h3 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: white;
-  margin-bottom: 1rem;
+.tarif-item span{
+    color:#cbd5e1;
 }
 
-.plan-price {
-  margin-bottom: 1rem;
+.tarif-item strong{
+    color:#818cf8;
+    font-size:1.05rem;
 }
 
-.plan-price .currency {
-  font-size: 1.25rem;
-  color: rgba(199, 210, 254, 0.7);
-  vertical-align: top;
+/* ==========================================
+   NOTE
+========================================== */
+
+.pricing-note{
+    margin-top:60px;
+    background:#111827;
+    border-left:5px solid #6366f1;
+    padding:25px;
+    border-radius:14px;
 }
 
-.plan-price .amount {
-  font-size: 3rem;
-  font-weight: 700;
-  color: white;
+.pricing-note strong{
+    display:block;
+    color:#fff;
+    margin-bottom:10px;
+    font-size:1.1rem;
 }
 
-.plan-price .period {
-  font-size: 1rem;
-  color: rgba(199, 210, 254, 0.7);
+.pricing-note p{
+    color:#94a3b8;
+    line-height:1.8;
 }
 
-.plan-desc {
-  color: rgba(199, 210, 254, 0.6);
-  font-size: 0.9375rem;
-}
+/* ==========================================
+   RESPONSIVE
+========================================== */
 
-.plan-features {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 2rem 0;
-}
+@media(max-width:768px){
 
-.plan-features li {
-  padding: 0.75rem 0;
-  border-bottom: 1px solid rgba(75, 85, 99, 0.2);
-  color: rgba(199, 210, 254, 0.8);
-}
+    .pricing-header h2{
+        font-size:32px;
+    }
 
-.plan-features li:last-child {
-  border-bottom: none;
-}
+    .tarif-card{
+        width:100%;
+        max-width:380px;
+    }
 
-.plan-features li.disabled {
-  color: rgba(199, 210, 254, 0.4);
-}
-
-.plan-card .btn {
-  width: 100%;
-}
-
-.pricing-faq {
-  padding: 4rem 1.5rem;
-  background: rgba(17, 24, 39, 0.3);
-  border-top: 1px solid rgba(99, 102, 241, 0.1);
-}
-
-.pricing-faq .container {
-  max-width: 72rem;
-  margin: 0 auto;
-}
-
-.pricing-faq h2 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: white;
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.faq-list {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.faq-item {
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  background: rgba(17, 24, 39, 0.6);
-  border: 1px solid rgba(75, 85, 99, 0.3);
-  border-radius: 1rem;
-}
-
-.faq-item h4 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: white;
-  margin-bottom: 0.75rem;
-}
-
-.faq-item p {
-  color: rgba(199, 210, 254, 0.7);
-  line-height: 1.6;
-}
-
-@media (max-width: 768px) {
-  .pricing-hero h1 {
-    font-size: 2rem;
-  }
-  
-  .plans-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .plan-price .amount {
-    font-size: 2.5rem;
-  }
 }

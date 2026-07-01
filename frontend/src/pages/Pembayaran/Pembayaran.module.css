@@ -1,8 +1,7 @@
 .container {
   padding: 1.5rem;
-  max-width: 1200px;
-  margin: 0 auto;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .loading {
@@ -14,22 +13,20 @@
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+  align-items: center;
+  margin-bottom: 30px;
 }
 
 .title {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  margin-bottom: 0.2rem;
-  color: #1f2937;
+  color: #111827;
+  margin-bottom: 6px;
 }
 
 .subtitle {
-  color: #6c757d;
-  font-size: 0.875rem;
+  font-size: 1rem;
+  color: #6b7280;
 }
 
 .header__actions {
@@ -71,22 +68,23 @@
 
 .card {
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
   overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,.08);
 }
 
-.card__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid #f0f0f0;
+.card__header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px 24px;
+  border-bottom:1px solid #eef2f7;
 }
 
 .card__title {
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
   margin: 0;
 }
 
@@ -181,28 +179,30 @@
   background: #0e6e90;
 }
 
-.btn__refresh {
-  background: none;
-  color: #4361ee;
-  border: 1.5px solid #c7d2fe;
-  padding: 0.4rem 0.75rem;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: background 0.2s;
+.btn__refresh{
+background:#f8fafc;
+color:#2563eb;
+border:1px solid #dbeafe;
+padding:8px 14px;
+border-radius:8px;
+font-weight:600;
+cursor:pointer;
+transition:.25s;
 }
 
-.btn__refresh:hover {
-  background: #f0f2ff;
+.btn__refresh:hover{
+background:#2563eb;
+color:white;
 }
 
 /* Badge */
-.badge {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: 0.78rem;
-  font-weight: 600;
+.badge{
+display:inline-flex;
+align-items:center;
+padding:6px 12px;
+border-radius:999px;
+font-weight:600;
+font-size:13px;
 }
 
 .badge__aktif {
@@ -215,9 +215,9 @@
   color: #4338ca;
 }
 
-.badge__lunas {
-  background: #d4f5ed;
-  color: #047857;
+.badge__lunas{
+background:#dcfce7;
+color:#15803d;
 }
 
 /* Form */

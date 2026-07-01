@@ -58,7 +58,7 @@ const features = [
 
 export default function Features() {
   return (
-    <section className="features-section">
+    <section id = "fitur" className="features-section">
       <div className="features-container">
         <div className="features-header">
           <span className="features-badge">Fitur Unggulan</span>

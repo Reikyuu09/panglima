@@ -1,17 +1,16 @@
 .sidebar {
   width: 280px;
   height: 100vh;
-  background-color: #4361ee;
+  background: #111827;
   color: white;
+  border-right: 1px solid #1f2937;
   position: fixed;
   left: 0;
   top: 0;
   display: flex;
   flex-direction: column;
   padding: 20px 0;
-  z-index: 1000;
-  transition: transform 0.3s ease;
-  overflow-y: auto;
+  z-index: 100;
 }
 
 @media (max-width: 768px) {
@@ -51,8 +50,8 @@
 }
 
 .logoIcon {
-  background: white;
-  color: #4361ee;
+  background: #2563eb;
+  color: white;
   width: 35px;
   height: 35px;
   border-radius: 8px;
@@ -109,15 +108,15 @@
 }
 
 .navItem:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255,255,255,0.08);
   transform: translateX(5px);
 }
 
 .navItem.active {
-  background: rgba(255, 255, 255, 0.25);
+  background: #2563eb;
+  color: white;
   font-weight: 600;
 }
-
 .userSection {
   padding: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
@@ -147,7 +146,7 @@
 }
 
 .logoutBtn {
-  background: #e63946;
+  background: #dc2626;
   color: white;
   border: none;
   padding: 12px;
@@ -160,7 +159,7 @@
 }
 
 .logoutBtn:hover {
-  background: #c1121f;
+  background: #b91c1c;
 }
 
 .sidebar::-webkit-scrollbar {
