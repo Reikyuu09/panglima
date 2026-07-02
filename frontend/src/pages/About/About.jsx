@@ -65,12 +65,12 @@ export default function About() {
         <h2>Mengapa Memilih ParkInk?</h2>
 
         <ul className="mission-list">
-          <li>✔️ Proses Check-In & Check-Out lebih cepat.</li>
-          <li>✔️ Perhitungan tarif parkir otomatis.</li>
-          <li>✔️ Riwayat pembayaran tersimpan dengan aman.</li>
-          <li>✔️ Dashboard yang modern dan mudah dipahami.</li>
-          <li>✔️ Data kendaraan tersimpan secara terpusat.</li>
-          <li>✔️ Laporan parkir dapat dipantau kapan saja.</li>
+          <li>Proses Check-In & Check-Out lebih cepat.</li>
+          <li>Perhitungan tarif parkir otomatis.</li>
+          <li>Riwayat pembayaran tersimpan dengan aman.</li>
+          <li>Dashboard yang modern dan mudah dipahami.</li>
+          <li>Data kendaraan tersimpan secara terpusat.</li>
+          <li>Laporan parkir dapat dipantau kapan saja.</li>
         </ul>
       </div>
 
