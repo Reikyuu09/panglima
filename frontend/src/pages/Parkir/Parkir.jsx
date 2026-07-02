@@ -207,7 +207,6 @@ function Parkir() {
                 required
               >
                 <option value="tunai">Tunai</option>
-                <option value="qris">QRIS</option>
                 <option value="e-wallet">E-Wallet</option>
               </select>
             </div>
