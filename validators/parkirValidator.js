@@ -27,7 +27,7 @@ const validateCheckIn = (req, res, next) => {
       field: 'jenis_kendaraan',
       message: 'Jenis kendaraan wajib diisi'
     });
-  } else if (!['motor', 'mobil'].includes(jenis_kendaraan.toLowerCase())) {
+  } else if (!['motor', 'mobil','truk'].includes(jenis_kendaraan.toLowerCase())) {
     errors.push({
       field: 'jenis_kendaraan',
       message: 'Jenis kendaraan harus motor atau mobil'
