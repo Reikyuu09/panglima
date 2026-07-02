@@ -20,7 +20,7 @@ export default function Pricing() {
     {
       icon:<FaTruck />,
       title: "Kendaraan Besar",
-      first: "Rp 8.000",
+      first: "Rp 10.000",
       next: "Rp 5.000",
       max: "Rp 50.000",
     },
