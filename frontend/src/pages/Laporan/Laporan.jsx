@@ -34,6 +34,7 @@ function Laporan() {
     pendapatan: 0,
     motor: 0,
     mobil: 0,
+    truk: 0,
   });
 
   // useEffect(() => {
@@ -47,6 +48,8 @@ function Laporan() {
     try {
       const res = await laporanAPI.getRiwayat(startDate, endDate);
       const data = res.data || [];
+      console.log('jenis_kendaraan values:', data.map(d => d.jenis_kendaraan));
+
       setRiwayat(data);
 
       if (data.length === 0) {
@@ -65,12 +68,13 @@ function Laporan() {
 
       const motor = data.filter((d) => d.jenis_kendaraan === 'motor').length;
       const mobil = data.filter((d) => d.jenis_kendaraan === 'mobil').length;
+      const truk = data.filter((d) => d.jenis_kendaraan?.toLowerCase() === 'truk').length;
       const pendapatan = data.reduce(
         (sum, d) => sum + (parseInt(d.total_biaya) || 0),
         0
       );
 
-      setStats({ total: data.length, pendapatan, motor, mobil });
+      setStats({ total: data.length, pendapatan, motor, mobil, truk});
     } catch (err) {
       console.error('Load riwayat error:', err);
       setRiwayat([]);
@@ -255,6 +259,11 @@ function Laporan() {
             <span className={styles.stat__icon}></span>
             <span className={styles.stat__num}>{stats.mobil}</span>
             <span className={styles.stat__lbl}>Mobil</span>
+          </div>
+          <div className={styles.stat__mini}>
+            <span className={styles.stat__icon}></span>
+            <span className={styles.stat__num}>{stats.truk}</span>
+            <span className={styles.stat__lbl}>Truk</span>
           </div>
           <div className={styles.stat__mini}>
             <span className={styles.stat__icon}></span>
