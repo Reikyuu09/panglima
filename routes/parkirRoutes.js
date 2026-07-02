@@ -7,9 +7,12 @@ const { validateCheckIn, validateUpdateKendaraan } = require('../validators/park
 // Check-In Endpoint
 router.post('/checkin', validateCheckIn, ParkirController.checkIn);
 
+// ✅ NEW: Cari kendaraan aktif by plat nomor
+router.post('/cari', ParkirController.cariByPlat);
+
 // Kendaraan CRUD Endpoints
 router.post('/kendaraan', authorize('admin'), validateUpdateKendaraan, ParkirController.createKendaraan);
-router.get('/kendaraan', ParkirController.getAllKendaraan); // Semua bisa lihat
+router.get('/kendaraan', ParkirController.getAllKendaraan);
 router.put('/kendaraan/:id', authorize('admin'), validateUpdateKendaraan, ParkirController.updateKendaraan);
 router.delete('/kendaraan/:id', authorize('admin'), ParkirController.deleteKendaraan);
 

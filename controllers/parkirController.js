@@ -86,6 +86,80 @@ const ParkirController = {
   },
 
   // =====================
+  // ✅ NEW: CARI KENDARAAN BY PLAT NOMOR
+  // =====================
+  cariByPlat: async (req, res) => {
+    try {
+      const { plat_nomor } = req.body;
+
+      if (!plat_nomor) {
+        return res.status(400).json({
+          status: 400,
+          message: 'Plat nomor wajib diisi',
+          data: null
+        });
+      }
+
+      // 1. Cari kendaraan yang sedang parkir aktif
+      const parkirAktif = await ParkirModel.findByPlatNomorAktif(plat_nomor.toUpperCase());
+
+      if (!parkirAktif) {
+        return res.status(404).json({
+          status: 404,
+          message: `Kendaraan dengan plat nomor "${plat_nomor}" tidak ditemukan atau sudah keluar`,
+          data: null
+        });
+      }
+
+      // 2. Hitung durasi
+      const waktuMasuk = new Date(parkirAktif.waktu_masuk);
+      const waktuSekarang = new Date();
+      const diffMs = waktuSekarang - waktuMasuk;
+      const diffMinutes = Math.floor(diffMs / (1000 * 60));
+      const diffHours = Math.ceil(diffMs / (1000 * 60 * 60));
+
+      let durasi;
+      if (diffMinutes < 60) {
+        durasi = `${diffMinutes} menit`;
+      } else {
+        durasi = `${diffHours} jam`;
+      }
+
+      // 3. Hitung total biaya
+      let totalBiaya = diffHours * parkirAktif.tarif_perjam;
+
+      // Cek tarif maksimal
+      if (parkirAktif.tarif_maksimal && totalBiaya > parkirAktif.tarif_maksimal) {
+        totalBiaya = parkirAktif.tarif_maksimal;
+      }
+
+      // 4. Response dengan data lengkap untuk struk
+      return res.status(200).json({
+        status: 200,
+        message: 'Kendaraan ditemukan',
+        data: {
+          id_parkir: parkirAktif.id_parkir,
+          plat_nomor: parkirAktif.plat_nomor,
+          jenis_kendaraan: parkirAktif.jenis_kendaraan,
+          waktu_masuk: parkirAktif.waktu_masuk,
+          durasi: durasi,
+          durasi_jam: diffHours,
+          total_biaya: totalBiaya,
+          tarif_perjam: parkirAktif.tarif_perjam
+        }
+      });
+
+    } catch (error) {
+      console.error('Error cariByPlat:', error);
+      return res.status(500).json({
+        status: 500,
+        message: 'Terjadi kesalahan server',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
+    }
+  },
+
+  // =====================
   // GET ALL PARKIR
   // =====================
   getAllParkir: async (req, res) => {
@@ -243,15 +317,6 @@ const ParkirController = {
         error: process.env.NODE_ENV === 'development' ? error.message : undefined
       });
     }
-    // Contoh fungsi checkOut
-    const durasi = Math.ceil((new Date(waktu_keluar) - new Date(waktu_masuk)) / (1000 * 60 * 60));
-    const biaya = durasi * tarifPerJam;
-
-    // await db.query(`
-    //   UPDATE tableparkir 
-    //   SET waktu_keluar = ?, durasi_jam = ?, total_biaya = ?, status = 'selesai'
-    //   WHERE id_parkir = ?
-    // `, [waktu_keluar, durasi, biaya, id_parkir]);
   },
 
   // =====================
@@ -284,6 +349,7 @@ const ParkirController = {
       });
     }
   },
+
   // =====================
   // KENDARAAN KELUAR & HITUNG BIAYA
   // =====================
@@ -352,6 +418,5 @@ const ParkirController = {
   },
 };
 
-  
-
+// ✅ UPDATE: Tambah cariByPlat di exports
 module.exports = ParkirController;

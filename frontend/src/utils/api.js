@@ -89,6 +89,9 @@ export const parkirAPI = {
     request('/parkir/checkin', { method: 'POST', body: JSON.stringify(body) }),
   keluar: (body) =>
     request('/parkir/keluar', { method: 'POST', body: JSON.stringify(body) }),
+  // ✅ NEW: Cari kendaraan by plat nomor
+  cari: (plat_nomor) =>
+    request('/parkir/cari', { method: 'POST', body: JSON.stringify({ plat_nomor }) }),
 };
 
 // ====================
