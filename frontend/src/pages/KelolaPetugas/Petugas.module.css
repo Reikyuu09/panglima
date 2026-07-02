@@ -16,8 +16,9 @@
 }
 
 .pageHeader h1 {
-  font-size: 2rem;
-  color: white;
+  font-size: 40px;
+  font-weight: 700;
+  color: #111827;
   margin: 0;
 }
 

@@ -329,7 +329,7 @@ function Parkir() {
                   </button>
                 </div>
               </form>
-            )}
+         )}
 
             {/* TAHAP 2: Struk & Pembayaran */}
             {keluarStep === 2 && dataKendaraan && (
@@ -380,7 +380,6 @@ function Parkir() {
                       <option value="tunai">Tunai</option>
                       <option value="qris">QRIS</option>
                       <option value="e-wallet">E-Wallet</option>
-                      <option value="transfer">Transfer Bank</option>
                     </select>
                   </div>
 

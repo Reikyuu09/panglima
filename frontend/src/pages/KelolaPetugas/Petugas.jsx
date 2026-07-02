@@ -258,13 +258,13 @@ function Petugas() {
                     className={`${styles.btnSm} ${styles.btnEdit}`}
                     onClick={() => openModal('edit', petugas)}
                   >
-                    ✏️ Edit
+                  Edit
                   </button>
                   <button 
                     className={`${styles.btnSm} ${styles.btnDelete}`}
                     onClick={() => handleDelete(petugas.id_user)}
                   >
-                    🗑️ Hapus
+                  Hapus
                   </button>
                 </div>
               </div>
