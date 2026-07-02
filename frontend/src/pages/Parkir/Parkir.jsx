@@ -329,22 +329,8 @@ function Parkir() {
                   </button>
                 </div>
               </form>
-            )}
+         )}
 
-<<<<<<< HEAD
-            <div className={styles.form__group}>
-              <label className={styles.label}>Metode Pembayaran</label>
-              <select
-                className={styles.input}
-                value={keluarForm.metode_pembayaran}
-                onChange={(e) => setKeluarForm({ ...keluarForm, metode_pembayaran: e.target.value })}
-                required
-              >
-                <option value="tunai">Tunai</option>
-                <option value="e-wallet">E-Wallet</option>
-              </select>
-            </div>
-=======
             {/* TAHAP 2: Struk & Pembayaran */}
             {keluarStep === 2 && dataKendaraan && (
               <div className={styles.keluarWrapper}>
@@ -380,7 +366,6 @@ function Parkir() {
                     </div>
                   </div>
                 </div>
->>>>>>> 246dd84855e066ae87878b60230d4ee4e3dd3b04
 
                 {/* FORM PEMBAYARAN */}
                 <form onSubmit={handleKeluar} className={styles.form}>
