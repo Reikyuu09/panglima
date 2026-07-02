@@ -53,8 +53,18 @@ const KendaraanModel = {
   },
 
   // Delete kendaraan
-  delete: async (id) => {
+    delete: async (id) => {
     try {
+      await db.query(
+        `DELETE py FROM tablepembayaran py
+         INNER JOIN tableparkir p ON py.id_parkir = p.id_parkir
+         WHERE p.id_kendaraan = ?`,
+        [id]
+      );
+      await db.query(
+        'DELETE FROM tableparkir WHERE id_kendaraan = ?',
+        [id]
+      );
       const [result] = await db.query(
         'DELETE FROM tablekendaraan WHERE Id_kendaraan = ?',
         [id]
@@ -63,7 +73,9 @@ const KendaraanModel = {
     } catch (error) {
       throw new Error(`Error deleting kendaraan: ${error.message}`);
     }
-  }
-};
+  }  
+};       
+
+
 
 module.exports = KendaraanModel;
