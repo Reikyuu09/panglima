@@ -11,10 +11,10 @@
 }
 
 .title {
-  font-size: 1.75rem;
-  color: #1f2937;;
-  margin: 0 0 0.5rem 0;
+  font-size: 1.8rem;
   font-weight: 700;
+  color: #111827;
+  margin-bottom: 6px;
 }
 
 .subtitle {
@@ -308,10 +308,10 @@
 }
 
 .card__title {
-  font-size: 1.1rem;
-  color:#1f2937;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
   margin: 0;
-  font-weight: 600;
 }
 
 .card__badge {
