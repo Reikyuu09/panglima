@@ -7,21 +7,18 @@ export default function Pricing() {
       icon: <FaMotorcycle />,
       title: "Roda 2",
       first: "Rp 3.000",
-      next: "Rp 2.000",
       max: "Rp 20.000",
     },
     {
       icon: <FaCarSide />,
       title: "Roda 4",
       first: "Rp 5.000",
-      next: "Rp 3.000",
       max: "Rp 35.000",
     },
     {
       icon:<FaTruck />,
       title: "Kendaraan Besar",
       first: "Rp 10.000",
-      next: "Rp 5.000",
       max: "Rp 50.000",
     },
   ];
@@ -54,11 +51,6 @@ export default function Pricing() {
               <div className="tarif-item">
                 <span>Jam Pertama</span>
                 <strong>{item.first}</strong>
-              </div>
-
-              <div className="tarif-item">
-                <span>Per Jam Berikutnya</span>
-                <strong>{item.next}</strong>
               </div>
 
               <div className="tarif-item">
